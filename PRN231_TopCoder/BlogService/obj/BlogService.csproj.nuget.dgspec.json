@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {}
+    "C:\\Users\\PC\\Desktop\\ChuyenNganhKy8\\PRN321\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {}
   },
   "projects": {
-    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {
+    "C:\\Users\\PC\\Desktop\\ChuyenNganhKy8\\PRN321\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+        "projectUniqueName": "C:\\Users\\PC\\Desktop\\ChuyenNganhKy8\\PRN321\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
         "projectName": "BlogService",
-        "projectPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
-        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\obj\\",
+        "projectPath": "C:\\Users\\PC\\Desktop\\ChuyenNganhKy8\\PRN321\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\PC\\Desktop\\ChuyenNganhKy8\\PRN321\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.302\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -84,7 +85,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }
