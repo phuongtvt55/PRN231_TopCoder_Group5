@@ -6245,11 +6245,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\UserService\\UserService.csproj",
+      "projectUniqueName": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\UserService\\UserService.csproj",
       "projectName": "UserService",
-      "projectPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\UserService\\UserService.csproj",
+      "projectPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\UserService\\UserService.csproj",
       "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\UserService\\obj\\",
+      "outputPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\UserService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",

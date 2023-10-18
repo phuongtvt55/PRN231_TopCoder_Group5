@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {}
+    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {}
   },
   "projects": {
-    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {
+    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+        "projectUniqueName": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
         "projectName": "BlogService",
-        "projectPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+        "projectPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
         "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\obj\\",
+        "outputPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",

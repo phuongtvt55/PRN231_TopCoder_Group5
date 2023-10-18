@@ -34,6 +34,10 @@ namespace JobService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "JobService", Version = "v1" });
             });
             services.AddDbContext<jobServiceContext>();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

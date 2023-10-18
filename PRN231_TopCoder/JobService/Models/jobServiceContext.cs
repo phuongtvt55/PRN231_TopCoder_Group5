@@ -64,8 +64,6 @@ namespace JobService.Models
 
                 entity.Property(e => e.PostDate).HasColumnType("datetime");
 
-                entity.Property(e => e.RankId).HasColumnName("RankID");
-
                 entity.Property(e => e.Salary).HasMaxLength(100);
 
                 entity.Property(e => e.Status).HasMaxLength(50);

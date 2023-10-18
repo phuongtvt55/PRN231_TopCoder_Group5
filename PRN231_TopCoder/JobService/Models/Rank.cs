@@ -14,6 +14,7 @@ namespace JobService.Models
 
         public int RankId { get; set; }
         public string RankName { get; set; }
+        public int? IsDelete { get; set; }
 
         public virtual ICollection<JobRank> JobRanks { get; set; }
     }
