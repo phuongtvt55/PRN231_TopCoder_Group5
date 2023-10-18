@@ -1,0 +1,26 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c14b5093-3f9b-4f92-a47f-a1bef6fe4ea6": {
+      "ProjectGuid": "c14b5093-3f9b-4f92-a47f-a1bef6fe4ea6",
+      "DisplayName": "UserService",
+      "ColorIndex": 0
+    },
+    "3c25705c-13e9-4561-8209-dc157d3fa9ae": {
+      "ProjectGuid": "3c25705c-13e9-4561-8209-dc157d3fa9ae",
+      "DisplayName": "JobService",
+      "ColorIndex": 1
+    },
+    "04f15352-a496-4134-901f-a3a7cf444237": {
+      "ProjectGuid": "04f15352-a496-4134-901f-a3a7cf444237",
+      "DisplayName": "JobApplicationService",
+      "ColorIndex": 2
+    },
+    "271e9bb5-40a5-4451-be0a-26138146a869": {
+      "ProjectGuid": "271e9bb5-40a5-4451-be0a-26138146a869",
+      "DisplayName": "BlogService",
+      "ColorIndex": 3
+    }
+  },
+  "NextColorIndex": 4
+}

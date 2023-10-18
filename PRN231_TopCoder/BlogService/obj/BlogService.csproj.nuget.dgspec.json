@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {}
+    "D:\\FPT\\THESIS\\PRN231_TopCoder_Group5-main\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {}
   },
   "projects": {
-    "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {
+    "D:\\FPT\\THESIS\\PRN231_TopCoder_Group5-main\\PRN231_TopCoder\\BlogService\\BlogService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+        "projectUniqueName": "D:\\FPT\\THESIS\\PRN231_TopCoder_Group5-main\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
         "projectName": "BlogService",
-        "projectPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
-        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\obj\\",
+        "projectPath": "D:\\FPT\\THESIS\\PRN231_TopCoder_Group5-main\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+        "packagesPath": "C:\\Users\\Anh Koy\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\THESIS\\PRN231_TopCoder_Group5-main\\PRN231_TopCoder\\BlogService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Anh Koy\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[5.0.17, )"
             },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
@@ -71,8 +75,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -84,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.123\\RuntimeIdentifierGraph.json"
         }
       }
     }
