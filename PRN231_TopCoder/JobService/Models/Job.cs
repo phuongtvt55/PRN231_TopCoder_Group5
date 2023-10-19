@@ -26,7 +26,6 @@ namespace JobService.Models
         public string Website { get; set; }
         public string Nationality { get; set; }
         public int? YearExperience { get; set; }
-        public int? RankId { get; set; }
         public string ContractType { get; set; }
         public int? IsDelete { get; set; }
         public string Status { get; set; }
