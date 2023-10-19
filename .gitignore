@@ -1,0 +1,5 @@
+.vs/
+
+# run-time
+bin/
+obj/
