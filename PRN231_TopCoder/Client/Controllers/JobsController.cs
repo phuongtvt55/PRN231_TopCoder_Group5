@@ -6,40 +6,60 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobService.Models;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Client.Controllers
 {
     public class JobsController : Controller
     {
         private readonly jobServiceContext _context;
+        private readonly HttpClient client;
+        private string api = "";
 
         public JobsController()
         {
             _context = new jobServiceContext();
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            api = "https://localhost:44300/api/Jobs";
         }
 
         // GET: Jobs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Jobs.ToListAsync());
+            HttpResponseMessage response = await client.GetAsync(api);
+            string data = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            List<Job> list = JsonSerializer.Deserialize<List<Job>>(data, options);
+            ViewData["Category"]  = _context.Categories.ToList();
+            ViewData["Wishlist"] = _context.Wishlists.ToList();
+            ViewData["JobCategory"]  = _context.JobCategories.Include(c => c.Category).ToList();
+            ViewData["UserId"] = 1;
+            return View(list);
         }
 
         // GET: Jobs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            HttpResponseMessage response = await client.GetAsync(api + "/" + id);
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
-            }
+                string data = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
 
-            var job = await _context.Jobs
-                .FirstOrDefaultAsync(m => m.JobId == id);
-            if (job == null)
-            {
-                return NotFound();
+                Job job = JsonSerializer.Deserialize<Job>(data, options);
+                return View(job);
             }
-
-            return View(job);
+            return NotFound();
         }
 
         // GET: Jobs/Create

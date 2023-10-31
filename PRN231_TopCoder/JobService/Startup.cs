@@ -38,6 +38,7 @@ namespace JobService
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +56,13 @@ namespace JobService
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("https://localhost:5001")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
 
             app.UseEndpoints(endpoints =>
             {

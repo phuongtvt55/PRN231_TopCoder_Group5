@@ -391,3 +391,17 @@
     padding-right: 0;
     border-right: none;
 }
+
+.categoryList {
+    margin-top: 15px;
+}
+
+.categoryList a {
+    background-color: lightcyan;
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.categoryList a:hover {
+    background-color: lightyellow;
+}       

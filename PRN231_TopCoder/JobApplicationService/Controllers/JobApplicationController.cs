@@ -17,6 +17,8 @@ namespace JobApplicationService.Controllers
             _dbContext = dbContext;
         }
 
+
+        // get all
         [HttpGet]
         public IActionResult GetAllJobApplications()
         {
@@ -36,8 +38,8 @@ namespace JobApplicationService.Controllers
             };
         }
 
-
-        [HttpGet]
+        // get 1 
+        [HttpGet("{id}")]
         public IActionResult GetJobApplication(int id) {
             try
             {
@@ -54,7 +56,7 @@ namespace JobApplicationService.Controllers
             }
         }
 
-
+        // post
         [HttpPost]
         public IActionResult PostJobApplication(JobApplication ja)
         {
@@ -70,10 +72,11 @@ namespace JobApplicationService.Controllers
             }
         }
 
-        [HttpPut]
+        //put
+        [HttpPut("{id}")]
         public IActionResult PutJobApplication(JobApplication model)
         {
-            if(model == null)
+            if (model == null)
             {
                 return BadRequest("Invalid data");
             }
@@ -100,7 +103,9 @@ namespace JobApplicationService.Controllers
             }
         }
 
-        [HttpDelete]
+
+        // delete
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             try

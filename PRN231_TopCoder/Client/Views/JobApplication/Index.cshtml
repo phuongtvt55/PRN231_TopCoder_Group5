@@ -1,0 +1,68 @@
+﻿@model IEnumerable<JobApplicationService.Models.JobApplication>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JobId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplyDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDelete)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationId)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplyDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDelete)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ApplicationId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ApplicationId">Details</a> |
+                
+                <a asp-action="Remove" asp-route-id="@item.ApplicationId">Delete</a>
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -27,6 +27,16 @@ namespace JobService.Controllers
             return await _context.Wishlists.ToListAsync();
         }
 
+        [HttpGet("GetWishlistByJobAndUser/{jobId}/{userId}")]
+        public IActionResult GetWishlistByJobAndUser(int jobId, int userId)
+        {
+            // Tìm danh sách yêu thích dựa vào JobId và UserId
+            var wishlist = _context.Wishlists
+                .FirstOrDefault(w => w.JobId == jobId && w.UserId == userId);
+
+            return Ok(wishlist.WishlistId);
+        }
+
         // GET: api/Wishlists/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Wishlist>> GetWishlist(int id)
