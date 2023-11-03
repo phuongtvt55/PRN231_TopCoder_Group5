@@ -1,0 +1,109 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model UserService.Models.BusinessProfile
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("MyRole");
+}
+
+<h1>Edit</h1>
+
+<h4>Profile</h4>
+<hr />
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="BusinessId" type="hidden" />
+            <input asp-for="UserId" type="hidden" />
+            <input asp-for="User.UserId" type="hidden" />
+            <div class="form-group">
+                <label asp-for="User.UserName" class="control-label col-md-2"></label>
+                <input asp-for="User.UserName" class="form-control col-md-10" />
+                <span asp-validation-for="User.UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Email" class="control-label col-md-2"></label>
+                <input asp-for="User.Email" class="form-control col-md-10" />
+                <span asp-validation-for="User.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Password" class="control-label col-md-2"></label>
+                <input asp-for="User.Password" class="form-control col-md-10" />
+                <span asp-validation-for="User.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Address" class="control-label col-md-2"></label>
+                <input asp-for="User.Address" class="form-control col-md-10" />
+                <span asp-validation-for="User.Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Phone" class="control-label col-md-2"></label>
+                <input asp-for="User.Phone" class="form-control col-md-10" />
+                <span asp-validation-for="User.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyName" class="control-label col-md-2"></label>
+                <input asp-for="CompanyName" class="form-control col-md-10" />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+            @if (role == "Employer")
+            {
+                <div class="form-group">
+                    <label asp-for="AboutCompany" class="control-label col-md-2"></label>
+                    <input asp-for="AboutCompany" class="form-control col-md-10" />
+                    <span asp-validation-for="AboutCompany" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IsDelete" class="control-label col-md-2"></label>
+                    <input asp-for="IsDelete" class="form-control col-md-10" />
+                    <span asp-validation-for="IsDelete" class="text-danger"></span>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="User.ImageProfile" class="control-label col-md-2"></label>                
+                <div class="col-md-10">
+                    <img id="preview" src="/@ViewBag.ImgSrc" style="width:350px;height:350px; object-fit:cover" class="hidden" />
+                    <input asp-for="User.ImageProfile" class="form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" id="image" name="image" />
+                </div>
+                <span asp-validation-for="User.ImageProfile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Cvprofile" class="control-label col-md-2"></label>
+                <div class="col-md-10">
+                    <input type="file" accept=".pdf" asp-for="User.Cvprofile" class="form-control" id="cv" name="cv" />
+                    <a class="btn btn-outline-primary" href="/@ViewBag.CvSrc" target="_blank">Read</a>
+                    <span asp-validation-for="User.Cvprofile" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <input type="submit" value="Edit" class="btn btn-primary" />
+    </div>
+</form>
+@section Scripts {
+    <script>
+        $("#image").change(function () {
+            var input = this;
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Set the 'src' attribute of the 'preview' image to the selected image
+                    $("#preview").attr("src", e.target.result);
+                    $("#preview").removeClass("hidden"); // Show the image preview
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    </script>
+}
+

@@ -27,6 +27,8 @@ namespace Client
             services.AddControllersWithViews();
             services.AddHttpClient();
             services.AddTransient<blogServiceContext>();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +50,8 @@ namespace Client
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

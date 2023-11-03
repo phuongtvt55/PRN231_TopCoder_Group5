@@ -24,14 +24,16 @@ namespace UserService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BusinessProfile>>> GetBusinessProfiles()
         {
-            return await _context.BusinessProfiles.ToListAsync();
+            return await _context.BusinessProfiles.Include(m => m.User).ToListAsync();
         }
 
         // GET: api/BusinessProfiles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<BusinessProfile>> GetBusinessProfile(int id)
         {
-            var businessProfile = await _context.BusinessProfiles.FindAsync(id);
+            var businessProfile = await _context.BusinessProfiles.Include(m => m.User)
+                .Where(m => m.User.UserId == id)
+                .FirstOrDefaultAsync(m => m.BusinessId == id && m.User.UserId == id);
 
             if (businessProfile == null)
             {
@@ -52,6 +54,7 @@ namespace UserService.Controllers
             }
 
             _context.Entry(businessProfile).State = EntityState.Modified;
+            _context.Entry(businessProfile.User).State = EntityState.Modified;
 
             try
             {
@@ -77,7 +80,13 @@ namespace UserService.Controllers
         [HttpPost]
         public async Task<ActionResult<BusinessProfile>> PostBusinessProfile(BusinessProfile businessProfile)
         {
+            businessProfile.UserId = businessProfile.BusinessId;
+            businessProfile.User.UserId = businessProfile.BusinessId;
+            businessProfile.IsDelete = 0;
+            businessProfile.User.IsDelete = 0;
+
             _context.BusinessProfiles.Add(businessProfile);
+            _context.Users.Add(businessProfile.User);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBusinessProfile", new { id = businessProfile.BusinessId }, businessProfile);
@@ -94,6 +103,7 @@ namespace UserService.Controllers
             }
 
             _context.BusinessProfiles.Remove(businessProfile);
+            _context.Users.Remove(businessProfile.User);
             await _context.SaveChangesAsync();
 
             return NoContent();
