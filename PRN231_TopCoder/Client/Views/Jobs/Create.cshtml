@@ -39,6 +39,8 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
     <link href="~/css/form.css" rel="stylesheet" />
+    <!-- Sweet Alert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -78,7 +80,7 @@
                     </div>
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
                 </div>
-                <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Post A Job<i class="fa fa-arrow-right ms-3"></i></a>
+                <a asp-action="Create" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Post A Job<i class="fa fa-arrow-right ms-3"></i></a>
             </div>
         </nav>
         <!-- Navbar End -->
@@ -90,43 +92,87 @@
             <div class="container-form">
                 <div class="card-form">
                     <h1 class="card_title">Post a job</h1>
-                    <form class="card_form">
+                    <form class="card_form" asp-action="Create">
+                        <input type="hidden" asp-for="JobId" />
                         <div class="input">
-                            <input type="text" class="input_field" required />
+                            <input asp-for="JobTitle" type="text" class="input_field" />
                             <label class="input_label">Job title</label>
+                            <span asp-validation-for="JobTitle" class="text-danger"></span>
                         </div>
                         <div class="input">
-                            <textarea type="text" class="input_field" rows="4" cols="10" required></textarea>
+                            <textarea asp-for="JobDetail" type="text" class="input_field" rows="4" cols="10"></textarea>
                             <label class="input_label">Job detail</label>
-                        </div>
-                        <div>
-                            <div class="input">
-                                <input type="text" class="input_field" required />
-                                <label class="input_label">Address</label>
-                            </div>
-                            <div class="input">
-                                <input type="text" class="input_field" required />
-                                <label class="input_label">Address</label>
-                            </div>
+                            <span asp-validation-for="JobDetail" class="text-danger"></span>
                         </div>
                         <div class="input">
-                            <form action="http://www.foo.com" method="get">
+                            <input asp-for="Address" type="text" class="input_field" />
+                            <label class="input_label">Address</label>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div> 
+                        <div class="d-flex justify-content-between mt-3">
+                            <div class="input">
+                                <input type="text" class="input_field" name="SalaryFrom"/>
+                                <label class="input_label fix">Salary from</label>                                
+                            </div>
+                            <div class="input">
+                                <input type="text" class="input_field"  name="SalaryTo"/>
+                                <label class="input_label">Salary to</label>                                
+                            </div>
+                        </div>
+                        <div class="input mt-3">
+                            <input asp-for="JobRequirement" type="text" class="input_field"  />
+                            <label class="input_label">JobRequirement</label>
+                            <span asp-validation-for="JobRequirement" class="text-danger"></span>
+                        </div>
+                        <div class="input mt-3">
+                            <input asp-for="Website" type="text" class="input_field" />
+                            <label class="input_label">Website</label>
+                            <span asp-validation-for="Website" class="text-danger"></span>
+                        </div>
+                        <div class="input mt-3">
+                            <input asp-for="Skills" type="text" class="input_field" />
+                            <label class="input_label">Skills</label>
+                            <span asp-validation-for="Skills" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <div class="input">
+                                <input asp-for="Nationality" type="text" class="input_field" />
+                                <label class="input_label fix">Nationality</label>
+                                <span asp-validation-for="Nationality" class="text-danger"></span>
+                            </div>
+                            <div class="input">
+                                <input asp-for="YearExperience" type="text" class="input_field" />
+                                <label class="input_label">YearExperience</label>
+                                <span asp-validation-for="YearExperience" class="text-danger"></span>
+                            </div>
+                            <div class="input">
+                                <select asp-for="ContractType" class="form-control">
+                                    <option>Full Time</option>
+                                    <option>Part Time</option>
+                                </select>                               
+                            </div>
+                        </div>
+                        <div class="input">                       
                                 <div class="">
                                     <label class="">Category</label>
-                                    <select name="countries" id="countries" multiple>
-                                        <option value="1">C#</option>
-                                        <option value="2">Java</option>
-                                        <option value="3">PHP</option>
-                                        <option value="4">Ruby</option>
-                                        <option value="5">C/C++</option>
-                                        <option value="6">C#</option>
-                                        <option value="7">Java</option>
-                                        <option value="8">PHP</option>
-                                        <option value="9">Ruby</option>
-                                        <option value="10">C/C++</option>
-                                    </select>
+                                    <select name="category" id="category" multiple>
+                                    @foreach(var item in ViewBag.Category)
+                                    {
+                                        <option value="@item.CategoryId">@item.CategoryName</option>
+                                    }
+                                </select>
                                 </div>
-                            </form>
+                        </div>
+                        <div class="input">
+                            <div class="">
+                                <label class="">Rank</label>
+                                <select name="rank" id="rank" multiple>
+                                    @foreach (var item in ViewBag.Rank)
+                                    {
+                                        <option value="@item.RankId">@item.RankName</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
                         <button class="card_button">Post Job</button>
                     </form>
@@ -424,14 +470,56 @@
     <script src="/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
     <script>
-        new MultiSelectTag('countries', {
+        new MultiSelectTag('category', {
             rounded: true,    // default true
             shadow: true,      // default false
             placeholder: 'Search',  // default Search...
             onChange: function (values) {
                 console.log(values)
             }
-        })
+        }),
+            new MultiSelectTag('rank', {
+                rounded: true,    // default true
+                shadow: true,      // default false
+                placeholder: 'Search',  // default Search...
+                onChange: function (values) {
+                    console.log(values)
+                }
+            })
     </script>
 </body>
 </html>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+@* <script>
+    $(document).ready(function () {
+        loadCate();
+    });
+
+    
+    function loadCate() {
+        $.ajax({
+            url: "https://localhost:44300/api/JobCategory",
+            type: "GET",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                var html = '';
+                var count = 0;
+                $.each(result, function (key, item) {
+                    html += '<option value=' + item.categoryId + '>' + item.categoryName + '</option>';
+                });
+                console.log(html);
+                $('.dropdownCate').html(html);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script> *@

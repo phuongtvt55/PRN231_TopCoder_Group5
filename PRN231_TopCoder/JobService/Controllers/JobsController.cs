@@ -27,6 +27,12 @@ namespace JobService.Controllers
             return await _context.Jobs.ToListAsync();
         }
 
+        [HttpGet("GetJobByBusinessId")]
+        public ActionResult<IEnumerable<Job>> GetJobByBusinessId(int id)
+        {
+            return _context.Jobs.Where(b => b.BusinessId == id).ToList();
+        }
+
         // GET: api/Jobs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Job>> GetJob(int id)

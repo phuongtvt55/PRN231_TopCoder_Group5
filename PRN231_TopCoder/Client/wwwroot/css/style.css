@@ -392,16 +392,19 @@
     border-right: none;
 }
 
-.categoryList {
+.categoryList, 
+.rankList {
     margin-top: 15px;
 }
 
-.categoryList a {
+.categoryList a, 
+.rankList a {
     background-color: lightcyan;
     margin-right: 10px;
     padding: 5px;
 }
 
-.categoryList a:hover {
+.categoryList a:hover, 
+.rankList a:hover {
     background-color: lightyellow;
 }       
