@@ -9,6 +9,7 @@ using JobService.Models;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace Client.Controllers
 {
@@ -40,6 +41,7 @@ namespace Client.Controllers
             ViewData["Category"]  = _context.Categories.ToList();
             ViewData["Wishlist"] = _context.Wishlists.ToList();
             ViewData["JobCategory"]  = _context.JobCategories.Include(c => c.Category).ToList();
+            ViewData["JobRank"] = _context.JobRanks.Include(c => c.Rank).ToList();
             ViewData["UserId"] = 1;
             return View(list);
         }
@@ -65,6 +67,8 @@ namespace Client.Controllers
         // GET: Jobs/Create
         public IActionResult Create()
         {
+            ViewData["Category"] = _context.Categories.ToList();
+            ViewData["Rank"] = _context.Ranks.ToList();
             return View();
         }
 
@@ -73,31 +77,75 @@ namespace Client.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("JobId,BusinessId,PostDate,JobTitle,JobDetail,Salary,Address,JobRequirement,Skills,Website,Nationality,YearExperience,ContractType,IsDelete,Status")] Job job)
+        public async Task<IActionResult> Create(IFormCollection form,Job job)
         {
-            if (ModelState.IsValid)
+            string[] selectedCategories = Request.Form["category"];
+            string[] selectedRanks = Request.Form["rank"];
+            string salaryFrom = Request.Form["SalaryFrom"];
+            string salaryTo = Request.Form["SalaryTo"];
+            job.BusinessId = 1;
+            job.PostDate = DateTime.Today;
+            job.Salary = salaryFrom + "-" + salaryTo;
+            job.IsDelete = 0;
+            job.Status = "Waiting";
+            string data = JsonSerializer.Serialize(job);
+            var content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(api, content);
+            if(response.StatusCode == System.Net.HttpStatusCode.Created)
             {
-                _context.Add(job);
-                await _context.SaveChangesAsync();
+                Uri location = response.Headers.Location;
+                string jobIdString = location.Segments.Last();
+                foreach (var item in selectedCategories)
+                {
+                    JobCategory jobCategory = new JobCategory
+                    {
+                        JobId = Int32.Parse(jobIdString),
+                        CategoryId = Int32.Parse(item),
+                    };
+                    _context.JobCategories.Add(jobCategory);
+                    _context.SaveChanges();
+                }
+
+                foreach(var item in selectedRanks)
+                {
+                    JobRank jobRank = new JobRank
+                    {
+                        JobId = Int32.Parse(jobIdString),
+                        RankId = Int32.Parse(item),
+                    };
+                    _context.JobRanks.Add(jobRank);
+                    _context.SaveChanges();
+                }  
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Category"] = _context.Categories.ToList();
+            ViewData["Rank"] = _context.Ranks.ToList();
             return View(job);
         }
 
         // GET: Jobs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            ViewData["Category"] = _context.Categories.ToList();
+            ViewData["Rank"] = _context.Ranks.ToList();
+            ViewData["JobCategory"] = _context.JobCategories.Where(j => j.JobId == id).ToList();
+            ViewData["JobRank"] = _context.JobRanks.Where(j => j.JobId == id).ToList();
+            HttpResponseMessage response = await client.GetAsync(api + "/" + id);
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
-            }
+                string data = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
 
-            var job = await _context.Jobs.FindAsync(id);
-            if (job == null)
-            {
-                return NotFound();
+                Job job = JsonSerializer.Deserialize<Job>(data, options);
+                string[] salary = job.Salary.Split("-");
+                ViewData["SalaryFrom"] = salary[0];
+                ViewData["SalaryTo"] = salary[1];
+                return View(job);
             }
-            return View(job);
+            return NotFound();
         }
 
         // POST: Jobs/Edit/5
@@ -105,33 +153,66 @@ namespace Client.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("JobId,BusinessId,PostDate,JobTitle,JobDetail,Salary,Address,JobRequirement,Skills,Website,Nationality,YearExperience,ContractType,IsDelete,Status")] Job job)
+        public async Task<IActionResult> Edit(IFormCollection form,int id, Job job)
         {
             if (id != job.JobId)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            string[] selectedCategories = Request.Form["category"];
+            string[] selectedRanks = Request.Form["rank"];
+            string salaryFrom = Request.Form["SalaryFrom"];
+            string salaryTo = Request.Form["SalaryTo"];
+            job.BusinessId = 1;
+            job.PostDate = DateTime.Today;
+            job.Salary = salaryFrom + "-" + salaryTo;
+            job.IsDelete = 0;
+            job.Status = "Waiting";
+            string data = JsonSerializer.Serialize(job);
+            var content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PutAsync(api + "/" + id, content);
+            if(response.IsSuccessStatusCode)
             {
-                try
+                //Remove jobCate and jobRank
+                var jobCate = _context.JobCategories.Where(j => j.JobId == job.JobId).ToList();
+                var jobRank = _context.JobRanks.Where(j => j.JobId == job.JobId).ToList();
+                foreach(var item in jobCate)
                 {
-                    _context.Update(job);
-                    await _context.SaveChangesAsync();
+                    _context.JobCategories.Remove(item);
+                    _context.SaveChanges();
                 }
-                catch (DbUpdateConcurrencyException)
+                foreach(var item in jobRank)
                 {
-                    if (!JobExists(job.JobId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    _context.JobRanks.Remove(item);
+                    _context.SaveChanges();
                 }
-                return RedirectToAction(nameof(Index));
+
+                //Add new jobCate and JobRank
+                foreach (var item in selectedCategories)
+                {
+                    JobCategory jobCategory = new JobCategory
+                    {
+                        JobId = job.JobId,
+                        CategoryId = Int32.Parse(item),
+                    };
+                    _context.JobCategories.Add(jobCategory);
+                    _context.SaveChanges();
+                }
+
+                foreach (var item in selectedRanks)
+                {
+                    JobRank rank = new JobRank
+                    {
+                        JobId = job.JobId,
+                        RankId = Int32.Parse(item),
+                    };
+                    _context.JobRanks.Add(rank);
+                    _context.SaveChanges();
+                }
+                return RedirectToAction("Index");
             }
+            ViewData["Category"] = _context.Categories.ToList();
+            ViewData["Rank"] = _context.Ranks.ToList();
             return View(job);
         }
 

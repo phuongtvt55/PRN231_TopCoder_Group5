@@ -127,8 +127,8 @@ a {
     width: 640px;
     height: auto;
     position: absolute;
-    top: -145px;
-    left: -177px;
+    top: 55px;
+    left: 623px;
     -moz-animation: fish 3s forwards ease-in-out;
     -webkit-animation: fish 3s forwards ease-in-out;
     animation: fish 3s forwards ease-in-out;
@@ -158,8 +158,8 @@ a {
 }
 
 .fish-shadow {
-    top: -125px;
-    left: -157px;
+    top: 75px;
+    left: 623px;
 }
 
     .fish-shadow path {
@@ -185,7 +185,7 @@ a {
     margin: 40px;
     padding: 25px 20px 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    width: 320px;
+    width: 600px;
     box-sizing: border-box;
 }
 
@@ -269,6 +269,10 @@ a {
     transition: all 0.3s;
 }
 
+.input_label.fix{
+    top: 30px !important;
+}
+
 .input_field {
     border: 0;
     padding: 0;
@@ -280,14 +284,18 @@ a {
     line-height: 30px;
 }
 
+.input_field.flex{
+    width: 150%;
+}
+
     .input_field:focus,
     .input_field:valid {
         outline: 0;
         border-bottom-color: #665856;
     }
 
-        .input_field:focus + .input_label,
-        .input_field:valid + .input_label {
+        .input_field:focus + .input_label
+        {
             color: #665856;
             -moz-transform: translateY(-25px);
             -ms-transform: translateY(-25px);
@@ -323,4 +331,8 @@ a {
     bottom: 20px;
     right: 20px;
     z-index: 3;
+}
+
+.text-danger{
+    padding-top: 25px;
 }
