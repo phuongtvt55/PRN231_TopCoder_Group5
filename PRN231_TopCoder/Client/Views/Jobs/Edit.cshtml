@@ -38,9 +38,11 @@
     <!-- Multi select-->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
-    <link href="~/css/form.css" rel="stylesheet" />
+    <link href="/css/form.css" rel="stylesheet" />
     <!-- Sweet Alert-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Froala-->
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -67,7 +69,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="job-list.html" class="dropdown-item">Job List</a>
+                            <a asp-action="MyJobList" class="dropdown-item">Job List</a>
                         </div>
                     </div>
                     <div class="nav-item dropdown">
@@ -93,55 +95,55 @@
                     <form class="card_form" asp-action="Edit">
                         <input type="hidden" asp-for="JobId" />
                         <div class="input">
-                            <input asp-for="JobTitle" type="text" class="input_field" />
+                            <input asp-for="JobTitle" type="text" class="input_field" id="JobTitle" />
                             <label class="input_label">Job title</label>
-                            <span asp-validation-for="JobTitle" class="text-danger"></span>
+
                         </div>
                         <div class="input">
-                            <textarea asp-for="JobDetail" type="text" class="input_field" rows="4" cols="10"></textarea>
+                            <textarea id="edit" asp-for="JobDetail" name="jobdetail" id="JobDetail"></textarea>
                             <label class="input_label">Job detail</label>
-                            <span asp-validation-for="JobDetail" class="text-danger"></span>
+
                         </div>
                         <div class="input">
-                            <input asp-for="Address" type="text" class="input_field" />
+                            <input asp-for="Address" type="text" class="input_field" id="Address" />
                             <label class="input_label">Address</label>
-                            <span asp-validation-for="Address" class="text-danger"></span>
+
                         </div>
                         <div class="d-flex justify-content-between mt-3">
                             <div class="input">
-                                <input type="text" class="input_field" name="SalaryFrom" value="@ViewBag.SalaryFrom"/>
-                                <label class="input_label fix">Salary from</label>                                
+                                <input type="text" class="input_field" name="SalaryFrom" id="SalaryFrom" value="@ViewBag.SalaryFrom"/>
+                                <label class="input_label fix">Salary from</label>
                             </div>
                             <div class="input">
-                                <input type="text" class="input_field" name="SalaryTo" value="@ViewBag.SalaryTo"/>
-                                <label class="input_label">Salary to</label>                                
+                                <input type="text" class="input_field" name="SalaryTo" id="SalaryTo" value="@ViewBag.SalaryTo"/>
+                                <label class="input_label">Salary to</label>
                             </div>
                         </div>
                         <div class="input mt-3">
-                            <input asp-for="JobRequirement" type="text" class="input_field" />
+                            <input asp-for="JobRequirement" type="text" class="input_field" id="JobRequirement" />
                             <label class="input_label">JobRequirement</label>
-                            <span asp-validation-for="JobRequirement" class="text-danger"></span>
+
                         </div>
                         <div class="input mt-3">
-                            <input asp-for="Website" type="text" class="input_field" />
+                            <input asp-for="Website" type="text" class="input_field" id="Website" />
                             <label class="input_label">Website</label>
-                            <span asp-validation-for="Website" class="text-danger"></span>
+
                         </div>
                         <div class="input mt-3">
-                            <input asp-for="Skills" type="text" class="input_field" />
+                            <input asp-for="Skills" type="text" class="input_field" id="Skills" />
                             <label class="input_label">Skills</label>
-                            <span asp-validation-for="Skills" class="text-danger"></span>
+
                         </div>
                         <div class="d-flex justify-content-between mt-3">
                             <div class="input">
-                                <input asp-for="Nationality" type="text" class="input_field" />
+                                <input asp-for="Nationality" type="text" class="input_field" id="Nationality" />
                                 <label class="input_label fix">Nationality</label>
-                                <span asp-validation-for="Nationality" class="text-danger"></span>
+
                             </div>
                             <div class="input">
-                                <input asp-for="YearExperience" type="text" class="input_field" />
+                                <input asp-for="YearExperience" type="text" class="input_field" id="YearExperience" />
                                 <label class="input_label">YearExperience</label>
-                                <span asp-validation-for="YearExperience" class="text-danger"></span>
+
                             </div>
                             <div class="input">
                                 <select asp-for="ContractType" class="form-control">
@@ -168,8 +170,7 @@
                                         if(!check)
                                         {
                                             <option value="@item.CategoryId">@item.CategoryName</option>
-                                        }
-                                        
+                                        } 
                                     }
                                 </select>
                             </div>
@@ -199,7 +200,6 @@
                         </div>
                         <button class="card_button">Update Job</button>
                     </form>
-                    <button class="btn btn-primary" onclick="displayAlert()">Click</button>
                 </div>
                 <div class="fish-shadow-con">
                     <svg class="fish-shadow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -491,6 +491,8 @@
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
+    <!-- Froala-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
     <script>
         new MultiSelectTag('category', {
             rounded: true,    // default true
@@ -511,24 +513,81 @@
     </script>
 
     <script>
-        function displayAlert() {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
+        new FroalaEditor('#edit', {
+            imageUploadURL: '/UploadFiles',
+            imageUploadParams: {
+                id: 'edit'
+            }
+        })
+    </script>
 
-            Toast.fire({
-                icon: 'success',
-                title: 'Signed in successfully'
-            })
-        }
+    <script>
+        $(".card_form").submit(function (e) {
+            e.preventDefault();
+            var html = '';
+            var title = $('#JobTitle').val();
+            var yearExperience = $('#YearExperience').val();
+            var nationality = $('#Nationality').val();
+            var skills = $('#Skills').val();
+            var website = $('#Website').val();
+            var jobRequirement = $('#JobRequirement').val();
+            var salaryTo = $('#SalaryTo').val();
+            var salaryFrom = $('#SalaryFrom').val();
+            var address = $('#Address').val();
+            var jobDetail = $('#JobDetail').val();
+
+            var fieldsToCheck = [jobDetail, address, salaryFrom, salaryTo, jobRequirement, website, skills, nationality, yearExperience, title];
+            var fieldsToShow = ["JobDetail", "Address", "SalaryFrom", "SalaryTo", "JobRequirement", "Website", "Skills", "Nationality", "YearExperience", "Title"];
+            var errorMessage = "";
+
+            for (var i = fieldsToCheck.length - 1; i >= 0; i--) {
+                if (fieldsToCheck[i] === "") {
+                    errorMessage += '<b>' + '<span style="color: red;">' + fieldsToShow[i] + '</span>' + ' cannot be blank<br></b>';
+                }
+            }
+            
+            if(isNaN(salaryFrom) || salaryFrom <= 0){
+                errorMessage += '<b>' + '<span style="color: red;">Salary From</span>' + ' must be number and greater than 0<br></b>';
+            }
+            if (isNaN(salaryTo) || salaryTo <= 0) {
+                errorMessage += '<b>' + '<span style="color: red;">Salary To</span>' + ' must be number and greater than 0<br></b>';
+            }
+            if (isNaN(yearExperience) || yearExperience <= 0) {
+                errorMessage += '<b>' + '<span style="color: red;">Year experience</span>' + ' must be number and greater than 0<br></b>';
+            }
+            if (salaryFrom >= salaryTo) {
+                errorMessage += 'Salary From must be less than Salary To';
+            }
+
+            if (errorMessage !== "") {
+                html += errorMessage;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `Some feild wrong!!!`,
+                    footer: html
+                })
+            } else {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Update job successfully'
+                }).then(() => {
+                    this.submit();
+                })
+            }
+        });
+
     </script>
 </body>
 </html>

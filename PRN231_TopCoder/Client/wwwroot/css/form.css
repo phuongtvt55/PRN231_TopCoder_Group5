@@ -173,8 +173,8 @@ a {
 .fish-shadow {
     -webkit-filter: url("#goo");
     filter: url(#goo);
-    top: -125px;
-    left: -157px;
+    top: 75px;
+    left: 623px;
     opacity: 0.4;
 }
 
@@ -294,8 +294,8 @@ a {
         border-bottom-color: #665856;
     }
 
-        .input_field:focus + .input_label
-        {
+        .input_field:focus + .input_label,
+        .input_field:valid + .input_label {
             color: #665856;
             -moz-transform: translateY(-25px);
             -ms-transform: translateY(-25px);
@@ -335,4 +335,8 @@ a {
 
 .text-danger{
     padding-top: 25px;
+}
+
+.fr-box.fr-basic{
+    margin-top: 45px;
 }
