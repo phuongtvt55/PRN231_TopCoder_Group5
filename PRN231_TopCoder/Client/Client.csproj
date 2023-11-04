@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\cv\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>
