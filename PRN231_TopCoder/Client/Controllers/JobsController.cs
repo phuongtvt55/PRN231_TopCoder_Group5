@@ -48,10 +48,15 @@ namespace Client.Controllers
             ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
             ViewData["JobRank"] = _context.JobRanks.Include(c => c.Rank).ToList();
             var userId = HttpContext.Session.GetInt32("UserId");
-            var businessId = HttpContext.Session.GetInt32("BussinessId");
+            var businessId = HttpContext.Session.GetInt32("BusinessId");
             var role = HttpContext.Session.GetString("MyRole");
             //**
-            ViewData["UserId"] = 4;
+            if(role == null)
+            {
+                TempData["errorMessage"] = "Please login first";
+                return RedirectToAction("SetSessionData", "Users", new {id = 1});
+            }
+            ViewData["UserId"] = userId;
             
             return View(list);
         }
@@ -76,8 +81,10 @@ namespace Client.Controllers
                 ViewData["Wishlist"] = _context.Wishlists.ToList();
                 ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
                 ViewData["JobRank"] = _context.JobRanks.Include(c => c.Rank).ToList();
+
+                var userId = HttpContext.Session.GetInt32("UserId");
                 //**
-                ViewData["UserId"] = 4;
+                ViewData["UserId"] = userId;
                 return View("Index", list);
             }
             return NotFound();
@@ -103,8 +110,12 @@ namespace Client.Controllers
                 ViewData["Wishlist"] = _context.Wishlists.ToList();
                 ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
                 ViewData["JobRank"] = _context.JobRanks.Include(c => c.Rank).ToList();
+
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var businessId = HttpContext.Session.GetInt32("BusinessId");
+                var role = HttpContext.Session.GetString("MyRole");
                 //**
-                ViewData["UserId"] = 4;
+                ViewData["UserId"] = userId;
                 return View("Index", list);
             }
             return NotFound();
@@ -112,8 +123,7 @@ namespace Client.Controllers
 
         public async Task<IActionResult> GetJobByWishListId()
         {
-            //**
-            var userId = 4;
+            var userId = HttpContext.Session.GetInt32("UserId");
             HttpResponseMessage response = await client.GetAsync(api + "/GetJobByWishList/" + userId);
             if (response.IsSuccessStatusCode)
             {
@@ -133,8 +143,12 @@ namespace Client.Controllers
                 ViewData["Wishlist"] = _context.Wishlists.ToList();
                 ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
                 ViewData["JobRank"] = _context.JobRanks.Include(c => c.Rank).ToList();
+
+                
+                var businessId = HttpContext.Session.GetInt32("BusinessId");
+                var role = HttpContext.Session.GetString("MyRole");
                 //**
-                ViewData["UserId"] = 4;
+                ViewData["UserId"] = userId;
                 return View("Index", list);
             }
             return NotFound();
@@ -142,8 +156,7 @@ namespace Client.Controllers
 
         public async Task<IActionResult> MyJobList()
         {
-            //**
-            var id = 15;
+            var id = HttpContext.Session.GetInt32("BusinessId");
             HttpResponseMessage response = await client.GetAsync(api + "/GetJobByBusinessId/" + id);
             if (response.IsSuccessStatusCode)
             {
@@ -178,6 +191,9 @@ namespace Client.Controllers
                 var _db = new userServiceContext();
                 var business = _db.BusinessProfiles.Where(s => s.IsDelete.Equals(1)).SingleOrDefault(b => b.BusinessId == job.BusinessId);
                 ViewData["Business"] = business;
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var businessId = HttpContext.Session.GetInt32("BusinessId");
+                var role = HttpContext.Session.GetString("MyRole");                
                 return View(job);
             }
             return NotFound();
@@ -202,8 +218,8 @@ namespace Client.Controllers
             string[] selectedRanks = Request.Form["rank"];
             string salaryFrom = Request.Form["SalaryFrom"];
             string salaryTo = Request.Form["SalaryTo"];
-            //**
-            job.BusinessId = 15;
+            var businessId = HttpContext.Session.GetInt32("BusinessId");
+            job.BusinessId = businessId;
             job.PostDate = DateTime.Today;
             job.Salary = salaryFrom + "-" + salaryTo;
             job.IsDelete = 1;
@@ -236,7 +252,7 @@ namespace Client.Controllers
                     _context.JobRanks.Add(jobRank);
                     _context.SaveChanges();
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MyJobList");
             }
             ViewData["Category"] = _context.Categories.ToList();
             ViewData["Rank"] = _context.Ranks.ToList();
@@ -349,8 +365,8 @@ namespace Client.Controllers
             string[] selectedRanks = Request.Form["rank"];
             string salaryFrom = Request.Form["SalaryFrom"];
             string salaryTo = Request.Form["SalaryTo"];
-            //**
-            job.BusinessId = 15;
+            var businessId = HttpContext.Session.GetInt32("BusinessId");
+            job.BusinessId = businessId;
             job.PostDate = DateTime.Today;
             job.Salary = salaryFrom + "-" + salaryTo;
             job.IsDelete = 1;
@@ -396,7 +412,7 @@ namespace Client.Controllers
                     _context.JobRanks.Add(rank);
                     _context.SaveChanges();
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("MyJobList");
             }
             ViewData["Category"] = _context.Categories.ToList();
             ViewData["Rank"] = _context.Ranks.ToList();

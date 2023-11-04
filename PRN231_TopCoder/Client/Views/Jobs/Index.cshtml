@@ -1,7 +1,14 @@
-﻿@model IEnumerable<JobService.Models.Job>
+﻿@using Microsoft.AspNetCore.Http;
+@model IEnumerable<JobService.Models.Job>
 @{
     Layout = null;
+    var role = Context.Session.GetString("MyRole");
+    var businessId = Context.Session.GetInt32("BusinessId");
+    var userId = Context.Session.GetInt32("UserId");
+    var userName = Context.Session.GetString("Username");
 }
+
+<input type="hidden" id="myRole" value="@role"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,8 +69,14 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a asp-action="MyJobList" class="dropdown-item">Job List</a>          
-                            <a asp-action="GetJobByWishListId" class="dropdown-item">My Wishlist</a>
+                            @if(role == "Employer")
+                            {
+                                <a asp-action="MyJobList" class="dropdown-item">Job List</a>
+                            }
+                            else if(role == "User")
+                            {
+                                <a asp-action="GetJobByWishListId" class="dropdown-item">My Wishlist</a>
+                            }
                         </div>
                     </div>
                     <div class="nav-item dropdown">
@@ -75,8 +88,18 @@
                         </div>
                     </div>
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">@userName</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a asp-action="Edit" asp-controller="Users" asp-route-id="@userId" class="dropdown-item">Edit profile</a>
+                            <a asp-action="Logout" asp-controller="Users" class="dropdown-item">Log Out</a>
+                        </div>
+                    </div>
+                    
                 </div>
-                <a asp-action="Create" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Post A Job<i class="fa fa-arrow-right ms-3"></i></a>
+                @if(role == "Employer"){
+                    <a asp-action="Create" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Post A Job<i class="fa fa-arrow-right ms-3"></i></a>
+                }
             </div>
         </nav>
         <!-- Navbar End -->
@@ -267,8 +290,15 @@
                                                 @if(!check){
                                                     <button class="btn btn-light btn-square me-3" href="" onclick="return toggleWishList(@item.JobId, @ViewBag.UserId)"><i id="" class="far fa-heart heart-@item.JobId"></i></button>
                                                 }
-                                                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Apply Now</a>
-                                                </div>
+                                                @if(role == "User")
+                                                {
+                                                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Apply Now</a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">View Detail</a>
+                                                }
+                                            </div>
                                                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostDate</small>
                                             </div>
                                         </div>
@@ -330,7 +360,14 @@
                                                     {
                                                         <button class="btn btn-light btn-square me-3" href="" onclick="return toggleWishList(@item.JobId, @ViewBag.UserId)"><i id="" class="far fa-heart heart-@item.JobId"></i></button>
                                                     }
-                                                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Apply Now</a>
+                                                    @if (role == "User")
+                                                    {
+                                                        <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Apply Now</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">View Detail</a>
+                                                    }
                                                 </div>
                                                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostDate</small>
                                             </div>
@@ -394,7 +431,14 @@
                                                     {
                                                         <button class="btn btn-light btn-square me-3" href="" onclick="return toggleWishList(@item.JobId, @ViewBag.UserId)"><i id="" class="far fa-heart heart-@item.JobId"></i></button>
                                                     }
-                                                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Apply Now</a>
+                                                    @if (role == "User")
+                                                    {
+                                                        <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Apply Now</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">View Detail</a>
+                                                    }
                                                 </div>
                                                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostDate</small>
                                             </div>
@@ -567,14 +611,39 @@
 
     function toggleWishList(JobId, UserId) {
         //console.log(JobId);
-        
-        var heart = ".heart-" + JobId; 
-        $(heart).toggleClass("toggleWishlist");
-        if ($(heart).hasClass("toggleWishlist")) {
-            addWishList(JobId, UserId);
+        var role = $('#myRole').val();
+        if (role == "User") {
+            var heart = ".heart-" + JobId;
+            $(heart).toggleClass("toggleWishlist");
+            if ($(heart).hasClass("toggleWishlist")) {
+                addWishList(JobId, UserId);
+            } else {
+                getWishListId(JobId, UserId);
+            }
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Add wishlist successfully'
+            })
         } else {
-            getWishListId(JobId, UserId);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Not available for employer',                
+            })
         }
+        
     }
 
     function getWishListId(JobId, UserId) {

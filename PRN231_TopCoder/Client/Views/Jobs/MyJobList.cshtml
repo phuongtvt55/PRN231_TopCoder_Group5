@@ -1,6 +1,9 @@
 ﻿@model IEnumerable<JobService.Models.Job>
+@using Microsoft.AspNetCore.Http;
 @{
     Layout = null;
+    var userName = Context.Session.GetString("Username");
+    var userId = Context.Session.GetInt32("UserId");
 }
 
 <!DOCTYPE html>
@@ -78,6 +81,14 @@
                         </div>
                     </div>
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">@userName</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a asp-action="Edit" asp-controller="Users" asp-route-id="@userId" class="dropdown-item">Edit profile</a>
+                            <a asp-action="Logout" asp-controller="Users" class="dropdown-item">Log Out</a>
+                        </div>
+                    </div>
+                    
                 </div>
                 <a asp-action="Create" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Post A Job<i class="fa fa-arrow-right ms-3"></i></a>
             </div>

@@ -78,7 +78,7 @@ namespace UserService.Controllers
         public async Task<ActionResult<User>> PostBusinessProfile(User user)
         {
 			user.BusinessProfile.UserId = user.UserId;
-			user.BusinessProfile.IsDelete = 0;
+			user.BusinessProfile.IsDelete = 1;
 
 			_context.BusinessProfiles.Add(user.BusinessProfile);
 			_context.Users.Add(user);

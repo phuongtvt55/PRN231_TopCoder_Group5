@@ -79,32 +79,40 @@ namespace Client.Controllers
             {
                 string data = response.Content.ReadAsStringAsync().Result;
                 userList = JsonConvert.DeserializeObject<List<User>>(data);
+                var check = false;
                 foreach (var item in userList)
                 {
                     if (item.Email == email && BCrypt.Net.BCrypt.Verify(pass, item.Password))
                     { 
                         if (item.UserType == role)
                         {
+                            check = true;
                             HttpContext.Session.SetInt32("UserId", item.UserId);
 							HttpContext.Session.SetString("Username", item.UserName);
-							HttpContext.Session.SetString("ImageProfile", item.ImageProfile);
-							if (item.UserType == "Employer")
+                            if(item.BusinessProfile == null)
                             {
-								HttpContext.Session.SetInt32("BusinessId", item.BusinessProfile.BusinessId);
-							}                            
-                            return RedirectToAction("Index", "Home");
+                                HttpContext.Session.SetInt32("BusinessId", 0);
+                            }
+                            else
+                            {
+                                HttpContext.Session.SetInt32("BusinessId", item.BusinessProfile.BusinessId);
+                            }
+                            if(item.ImageProfile == null)
+                            {
+                                HttpContext.Session.SetString("ImageProfile", "0");
+                            }
+                            else
+                            {
+                                HttpContext.Session.SetString("ImageProfile", item.ImageProfile);
+                            }               
+                            return RedirectToAction("Index", "Jobs");
                         }          
-                        else
-                        {
-                            TempData["errorMessage"] = "This account is not existed";
-                            return View();
-                        }
                     }
-                    else
-                    {
-                        TempData["errorMessage"] = "This account is incorrect";
-                        return View();
-                    }
+                }
+                if (!check)
+                {
+                    TempData["errorMessage"] = "This account is not existed";
+                    return View();
                 }
             }
             return View();
