@@ -3,46 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BlogService.Models;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using BlogService.Models;
 
 namespace Client.Controllers
 {
     public class BlogsController : Controller
-    {
-        private readonly IHttpClientFactory _httpClientFactory;
+    {        
+        private readonly blogServiceContext _context;
+        private readonly HttpClient client;
+        private string api = "";
 
-        public BlogsController(IHttpClientFactory httpClientFactory)
+        public BlogsController()
         {
-            _httpClientFactory = httpClientFactory;
+            _context = new blogServiceContext();
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            api = "https://localhost:44305/api/Blogs";
         }
         // GET: Blogs
         public async Task<IActionResult> Index()
         {
-            using (var client = new HttpClient())
+            HttpResponseMessage response = await client.GetAsync(api);
+            string data = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
             {
-                client.BaseAddress = new Uri("https://localhost:44305/");
-                var response = await client.GetAsync("api/Blogs");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var blogList = JsonConvert.DeserializeObject<List<Blog>>(data);
-
-                    // Trả kết quả cho View hoặc xử lý tiếp
-                    return View(blogList);
-                }
-                else
-                {
-                    // Xử lý lỗi
-                    return View("Error");
-                }
-            }
+                PropertyNameCaseInsensitive = true,
+            };
+            List<Blog> list = JsonSerializer.Deserialize<List<Blog>>(data, options);
+            return View(list);
         }
 
         // GET: Blogs/Details/5
@@ -53,30 +46,19 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            using (var client = new HttpClient())
+            HttpResponseMessage response = await client.GetAsync(api + "/" + id);
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri("https://localhost:44305/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var response = await client.GetAsync($"/api/Blogs/{id}");
-
-                if (response.IsSuccessStatusCode)
+                string data = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var blog = JsonConvert.DeserializeObject<Blog>(data);
+                    PropertyNameCaseInsensitive = true,
+                };
 
-                    if (blog == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(blog);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                Blog blog = JsonSerializer.Deserialize<Blog>(data, options);
+                return View(blog);
             }
+            return NotFound();
         }
 
 
@@ -93,24 +75,14 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Blog blog)
         {
-            using (var client = new HttpClient())
+            string data = JsonSerializer.Serialize(blog);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(api, content);
+            if (response.StatusCode == System.Net.HttpStatusCode.Created)
             {
-                client.BaseAddress = new Uri("https://localhost:44305/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var content = new StringContent(JsonConvert.SerializeObject(blog), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("/api/Blogs", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Create blog is not success!");
-                    return View(blog);
-                }
+                return RedirectToAction(nameof(Index));
             }
+            return View(blog);
         }
 
 
@@ -122,30 +94,19 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            using (var client = new HttpClient())
+            HttpResponseMessage response = await client.GetAsync(api + "/" + id);
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri("https://localhost:44305/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var response = await client.GetAsync($"/api/Blogs/{id}");
-
-                if (response.IsSuccessStatusCode)
+                string data = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var blog = JsonConvert.DeserializeObject<Blog>(data);
+                    PropertyNameCaseInsensitive = true,
+                };
 
-                    if (blog == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(blog);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                Blog blog = JsonSerializer.Deserialize<Blog>(data, options);
+                return View(blog);
             }
+            return NotFound();
         }
 
         // POST: Blogs/Edit/5
@@ -155,36 +116,13 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Blog blog)
         {
-            if (id != blog.BlogId)
+            string data = JsonSerializer.Serialize(blog);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PutAsync(api, content);
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
-
-            if (ModelState.IsValid)
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri("https://localhost:44305/");
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    // Serialize đối tượng Blog thành chuỗi JSON
-                    var content = new StringContent(JsonConvert.SerializeObject(blog), Encoding.UTF8, "application/json");
-
-                    // Gửi yêu cầu PUT để cập nhật bài viết
-                    var response = await client.PutAsync($"/api/Blogs/{id}", content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        return View(blog);
-                    }
-                }
-            }
-
             return View(blog);
         }
 
@@ -197,30 +135,19 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            using (var client = new HttpClient())
+            HttpResponseMessage response = await client.GetAsync(api + "/" + id);
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri("https://localhost:44305/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var response = await client.GetAsync($"/api/Blogs/{id}");
-
-                if (response.IsSuccessStatusCode)
+                string data = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var blog = JsonConvert.DeserializeObject<Blog>(data);
+                    PropertyNameCaseInsensitive = true,
+                };
 
-                    if (blog == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(blog);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                Blog blog = JsonSerializer.Deserialize<Blog>(data, options);
+                return View(blog);
             }
+            return NotFound();
         }
 
         // POST: Blogs/Delete/5
@@ -228,22 +155,47 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            using (var client = new HttpClient())
+            HttpResponseMessage response = await client.DeleteAsync(api + id);
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri("https://localhost:44305/");
-                // Gửi yêu cầu DELETE để xóa bài viết
-                var response = await client.DeleteAsync($"/api/Blogs/{id}");
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
 
-                if (response.IsSuccessStatusCode)
+        public async Task<IActionResult> ShowBlogList()
+        {
+            HttpResponseMessage response = await client.GetAsync(api);
+            string data = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            List<Blog> list = JsonSerializer.Deserialize<List<Blog>>(data, options);
+            return View(list);
+        }
+        public async Task<IActionResult> UpdateStatus(int id, string status)
+        {
+            Blog blog = new Blog();
+            HttpResponseMessage response1 = await client.GetAsync(api + "/" + id);
+            if (response1.IsSuccessStatusCode)
+            {
+                string data1 = await response1.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
                 {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
+                    PropertyNameCaseInsensitive = true,
+                };
+                blog = JsonSerializer.Deserialize<Blog>(data1, options);
+                blog.Status = status;
+                string data2 = JsonSerializer.Serialize(blog);
+                var content = new StringContent(data2, Encoding.UTF8, "application/json");
+                HttpResponseMessage response2 = await client.PutAsync(api + "/" + id, content);
+                if (response2.IsSuccessStatusCode)
                 {
-                    // Xử lý lỗi, ví dụ hiển thị thông báo lỗi
-                    return View("Error");
+                    return RedirectToAction("ShowBlogList");
                 }
             }
+            return Ok();
         }
     }
 }

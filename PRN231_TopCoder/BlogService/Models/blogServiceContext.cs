@@ -31,7 +31,7 @@ namespace BlogService.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+            modelBuilder.HasAnnotation("Relational:Collation", "Latin1_General_CI_AS");
 
             modelBuilder.Entity<Blog>(entity =>
             {
@@ -42,6 +42,8 @@ namespace BlogService.Models
                 entity.Property(e => e.BlogTitle).HasMaxLength(50);
 
                 entity.Property(e => e.Image).IsUnicode(false);
+
+                entity.Property(e => e.Status).HasMaxLength(50);
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
             });

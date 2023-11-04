@@ -3,7 +3,7 @@
     var role = Context.Session.GetString("MyRole");
     var username = Context.Session.GetString("UserName");
     var image = Context.Session.GetString("ImageProfile");
-    var bussinessId = Context.Session.GetString("BussinessId");
+    var userId = Context.Session.GetString("UserId");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -34,12 +34,24 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Jobs" asp-action="Index">Job</a>
-                        </li>
+                        </li>   
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">UsersList</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="ShowBlogList">Blogs</a>
                         </li>
                         @{
-                            if (bussinessId != null)
+                            if (role == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                                </li>                                
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="ShowBlogList">Blogs</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Jobs" asp-action="ShowJobList">Jobs</a>
+                                </li>
+                            }
+                            if (userId != null)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Logout">Logout</a>
@@ -62,6 +74,24 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @{
+                var errorMessage = TempData["errorMessage"]?.ToString();
+                var successMessage = TempData["successMessage"]?.ToString();
+            }
+            @if (!string.IsNullOrWhiteSpace(@successMessage))
+            {
+                <div class="alert alert-success">
+                    <b>Success: </b>@successMessage
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            else if (!string.IsNullOrWhiteSpace(@errorMessage))
+            {
+                <div class="alert alert-danger">
+                    <b>Error: </b>@errorMessage
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

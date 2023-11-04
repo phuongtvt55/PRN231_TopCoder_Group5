@@ -24,14 +24,16 @@ namespace UserService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(m => m.BusinessProfile).ToListAsync();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Include(m => m.BusinessProfile)
+                .Where(m => m.UserId == id)
+                .FirstOrDefaultAsync(m => m.UserId == id);
 
             if (user == null)
             {
@@ -46,12 +48,21 @@ namespace UserService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
+            var userList = await _context.Users.Include(m => m.BusinessProfile).ToListAsync();
             if (id != user.UserId)
             {
                 return BadRequest();
             }
+            foreach(var item in userList)
+            {
+                if (user.Email == item.Email)
+                {
+                    return BadRequest();
+                }
+            }            
 
             _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(user.BusinessProfile).State = EntityState.Modified;
 
             try
             {

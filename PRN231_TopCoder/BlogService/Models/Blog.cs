@@ -18,6 +18,7 @@ namespace BlogService.Models
         public string BlogDetail { get; set; }
         public string Image { get; set; }
         public int? IsDelete { get; set; }
+        public string Status { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
     }

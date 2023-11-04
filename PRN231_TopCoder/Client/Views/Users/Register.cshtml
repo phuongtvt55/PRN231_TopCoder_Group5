@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http;
-@model UserService.Models.BusinessProfile
+@model UserService.Models.User
 @{
 	ViewData["Title"] = "Register";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +9,6 @@
 	<link rel="stylesheet" href="~/css/form-style.css">
 </head>
 <body>
-
 	<div class="wrapper">
 		<div class="image-holder">
 			<img src="img/banner.jpg" alt="">
@@ -25,29 +24,29 @@
 				</div>
 				<div class="form-group">
 					<label for="">Full Name:</label>
-					<input asp-for="User.UserName" type="text" class="form-control" data-validation="length alphanumeric" data-validation-length="3-12">
+					<input asp-for="UserName" type="text" class="form-control" data-validation="length alphanumeric" data-validation-length="3-12">
 				</div>
 				<div class="form-group">
 					<label for="">E-mail:</label>
-					<input asp-for="User.Email" type="text" class="form-control" data-validation="email">
+					<input asp-for="Email" type="text" class="form-control" data-validation="email">
 				</div>
 				<div class="form-group">
 					<label for="">Password:</label>
-					<input asp-for="User.Password" type="password" class="form-control" data-validation="length" data-validation-length="min8">
+					<input asp-for="Password" type="password" class="form-control" data-validation="length" data-validation-length="min8">
 				</div>
 				<div class="form-group">
 					<label for="">Address:</label>
-					<input asp-for="User.Address" type="text" class="form-control" data-validation="length alphanumeric">
+					<input asp-for="Address" type="text" class="form-control" data-validation="length alphanumeric">
 				</div>
 				<div class="form-group">
 					<label for="">Phone Number:</label>
-					<input asp-for="User.Phone" type="tel" class="form-control" data-validation="phone">
+					<input asp-for="Phone" type="tel" class="form-control" data-validation="phone">
 				</div>
 				@if (role == "Employer")
 				{
 					<div class="form-group">
 						<label for="">Company Name:</label>
-						<input asp-for="CompanyName" type="text" class="form-control" data-validation="length alphanumeric">
+						<input asp-for="BusinessProfile.CompanyName" type="text" class="form-control" data-validation="length alphanumeric">
 					</div>
 				}
 				<button>create my account</button>

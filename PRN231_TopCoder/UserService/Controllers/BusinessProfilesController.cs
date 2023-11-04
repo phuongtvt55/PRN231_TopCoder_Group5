@@ -29,23 +29,21 @@ namespace UserService.Controllers
 
         // GET: api/BusinessProfiles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BusinessProfile>> GetBusinessProfile(int id)
-        {
-            var businessProfile = await _context.BusinessProfiles.Include(m => m.User)
-                .Where(m => m.User.UserId == id)
-                .FirstOrDefaultAsync(m => m.BusinessId == id && m.User.UserId == id);
+		public async Task<ActionResult<User>> GetUser(int id)
+		{
+			var user = await _context.Users.Include(m => m.BusinessProfile).FirstOrDefaultAsync(m => m.UserId == id);
 
-            if (businessProfile == null)
-            {
-                return NotFound();
-            }
+			if (user == null)
+			{
+				return NotFound();
+			}
 
-            return businessProfile;
-        }
+			return user;
+		}
 
-        // PUT: api/BusinessProfiles/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+		// PUT: api/BusinessProfiles/5
+		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutBusinessProfile(int id, BusinessProfile businessProfile)
         {
             if (id != businessProfile.BusinessId)
@@ -53,8 +51,7 @@ namespace UserService.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(businessProfile).State = EntityState.Modified;
-            _context.Entry(businessProfile.User).State = EntityState.Modified;
+            _context.Entry(businessProfile).State = EntityState.Modified;            
 
             try
             {
@@ -78,18 +75,16 @@ namespace UserService.Controllers
         // POST: api/BusinessProfiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BusinessProfile>> PostBusinessProfile(BusinessProfile businessProfile)
+        public async Task<ActionResult<User>> PostBusinessProfile(User user)
         {
-            businessProfile.UserId = businessProfile.BusinessId;
-            businessProfile.User.UserId = businessProfile.BusinessId;
-            businessProfile.IsDelete = 0;
-            businessProfile.User.IsDelete = 0;
+			user.BusinessProfile.UserId = user.UserId;
+			user.BusinessProfile.IsDelete = 0;
 
-            _context.BusinessProfiles.Add(businessProfile);
-            _context.Users.Add(businessProfile.User);
-            await _context.SaveChangesAsync();
+			_context.BusinessProfiles.Add(user.BusinessProfile);
+			_context.Users.Add(user);
+			await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBusinessProfile", new { id = businessProfile.BusinessId }, businessProfile);
+            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
         // DELETE: api/BusinessProfiles/5
