@@ -24,14 +24,38 @@ namespace JobService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Job>>> GetJobs()
         {
-            return await _context.Jobs.ToListAsync();
+            return await _context.Jobs.Where(s => s.IsDelete.Equals(1)).ToListAsync();
         }
 
-        [HttpGet("GetJobByBusinessId")]
+        [HttpGet("GetJobByCategory/{id}")]
+        public IActionResult GetJobByCategory(int id)
+        {
+            var job = _context.JobCategories.Include(j => j.Job).Where(i => i.CategoryId == id).ToList();
+            return Ok(job);
+        }
+
+        [HttpGet("GetJobByRank/{id}")]
+        public IActionResult GetJobByRank(int id)
+        {
+            var job = _context.JobRanks.Include(j => j.Job).Where(i => i.RankId == id).ToList();
+            return Ok(job);
+        }
+
+        [HttpGet("GetJobByWishList/{id}")]
+        public IActionResult GetJobByWishList(int id)
+        {
+            var job = _context.Wishlists.Include(j => j.Job).Where(i => i.UserId == id).ToList();
+            return Ok(job);
+        }
+
+
+       [HttpGet("GetJobByBusinessId/{id}")]
         public ActionResult<IEnumerable<Job>> GetJobByBusinessId(int id)
         {
-            return _context.Jobs.Where(b => b.BusinessId == id).ToList();
+            return _context.Jobs.Where(b => b.BusinessId == id).Where(s => s.IsDelete.Equals(1)).ToList();
         }
+
+       
 
         // GET: api/Jobs/5
         [HttpGet("{id}")]
@@ -98,10 +122,12 @@ namespace JobService.Controllers
             {
                 return NotFound();
             }
-
-            _context.Jobs.Remove(job);
+            job.IsDelete = 0;
+            _context.Jobs.Update(job);
             await _context.SaveChangesAsync();
-
+            var wishlist = await _context.Wishlists.SingleOrDefaultAsync(j => j.JobId == id);
+            _context.Wishlists.Remove(wishlist);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
