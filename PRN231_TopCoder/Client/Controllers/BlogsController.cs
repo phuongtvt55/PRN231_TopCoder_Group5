@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using BlogService.Models;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using JobService.Models;
+using BlogService.Models;
 
 namespace Client.Controllers
 {
     public class BlogsController : Controller
-    {
+    {        
         private readonly blogServiceContext _context;
         private readonly HttpClient client;
         private string api = "";
@@ -164,7 +163,7 @@ namespace Client.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ShowJobList()
+        public async Task<IActionResult> ShowBlogList()
         {
             HttpResponseMessage response = await client.GetAsync(api);
             string data = await response.Content.ReadAsStringAsync();
@@ -187,12 +186,13 @@ namespace Client.Controllers
                     PropertyNameCaseInsensitive = true,
                 };
                 blog = JsonSerializer.Deserialize<Blog>(data1, options);
+                blog.Status = status;
                 string data2 = JsonSerializer.Serialize(blog);
                 var content = new StringContent(data2, Encoding.UTF8, "application/json");
                 HttpResponseMessage response2 = await client.PutAsync(api + "/" + id, content);
                 if (response2.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("ShowJobList");
+                    return RedirectToAction("ShowBlogList");
                 }
             }
             return Ok();
