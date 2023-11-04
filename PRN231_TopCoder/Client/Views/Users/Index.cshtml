@@ -1,4 +1,4 @@
-﻿@model IEnumerable<UserService.Models.BusinessProfile>
+﻿@model IEnumerable<UserService.Models.User>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,16 +14,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.User.Email)
+                @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.Address)
+                @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.Phone)
+                @Html.DisplayNameFor(model => model.Phone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CompanyName)
+                @Html.DisplayNameFor(model => model.BusinessProfile.CompanyName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsDelete)
@@ -36,24 +36,24 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.User.Email)
+                    @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.User.Address)
+                    @Html.DisplayFor(modelItem => item.Address)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.User.Phone)
+                    @Html.DisplayFor(modelItem => item.Phone)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CompanyName)
+                    @Html.DisplayFor(modelItem => item.BusinessProfile.CompanyName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsDelete)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.BusinessId" class="fa-solid fa-pen-to-square"></a>
-                    <a asp-action="Details" asp-route-id="@item.BusinessId" class="fa-solid fa-circle-info"></a>
-                    <a asp-action="Delete" asp-route-id="@item.BusinessId" class="fa-solid fa-trash"></a>
+                    <a asp-action="Edit" asp-route-id="@item.UserId" class="fa-solid fa-pen-to-square"></a>
+                    <a asp-action="Details" asp-route-id="@item.UserId" class="fa-solid fa-circle-info"></a>
+                    <a asp-action="Delete" asp-route-id="@item.UserId" class="fa-solid fa-trash"></a>
                 </td>
             </tr>
         }

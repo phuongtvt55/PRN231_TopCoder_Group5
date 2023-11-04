@@ -38,9 +38,9 @@ namespace Client.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             List<Job> list = JsonSerializer.Deserialize<List<Job>>(data, options);
-            ViewData["Category"]  = _context.Categories.ToList();
+            ViewData["Category"] = _context.Categories.ToList();
             ViewData["Wishlist"] = _context.Wishlists.ToList();
-            ViewData["JobCategory"]  = _context.JobCategories.Include(c => c.Category).ToList();
+            ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
             ViewData["JobRank"] = _context.JobRanks.Include(c => c.Rank).ToList();
             ViewData["UserId"] = 1;
             return View(list);
@@ -77,7 +77,7 @@ namespace Client.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IFormCollection form,Job job)
+        public async Task<IActionResult> Create(IFormCollection form, Job job)
         {
             string[] selectedCategories = Request.Form["category"];
             string[] selectedRanks = Request.Form["rank"];
@@ -91,7 +91,7 @@ namespace Client.Controllers
             string data = JsonSerializer.Serialize(job);
             var content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(api, content);
-            if(response.StatusCode == System.Net.HttpStatusCode.Created)
+            if (response.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 Uri location = response.Headers.Location;
                 string jobIdString = location.Segments.Last();
@@ -106,7 +106,7 @@ namespace Client.Controllers
                     _context.SaveChanges();
                 }
 
-                foreach(var item in selectedRanks)
+                foreach (var item in selectedRanks)
                 {
                     JobRank jobRank = new JobRank
                     {
@@ -115,7 +115,7 @@ namespace Client.Controllers
                     };
                     _context.JobRanks.Add(jobRank);
                     _context.SaveChanges();
-                }  
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Category"] = _context.Categories.ToList();
@@ -153,7 +153,7 @@ namespace Client.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IFormCollection form,int id, Job job)
+        public async Task<IActionResult> Edit(IFormCollection form, int id, Job job)
         {
             if (id != job.JobId)
             {
@@ -171,17 +171,17 @@ namespace Client.Controllers
             string data = JsonSerializer.Serialize(job);
             var content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(api + "/" + id, content);
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 //Remove jobCate and jobRank
                 var jobCate = _context.JobCategories.Where(j => j.JobId == job.JobId).ToList();
                 var jobRank = _context.JobRanks.Where(j => j.JobId == job.JobId).ToList();
-                foreach(var item in jobCate)
+                foreach (var item in jobCate)
                 {
                     _context.JobCategories.Remove(item);
                     _context.SaveChanges();
                 }
-                foreach(var item in jobRank)
+                foreach (var item in jobRank)
                 {
                     _context.JobRanks.Remove(item);
                     _context.SaveChanges();
@@ -248,6 +248,41 @@ namespace Client.Controllers
         private bool JobExists(int id)
         {
             return _context.Jobs.Any(e => e.JobId == id);
+        }
+
+        public async Task<IActionResult> ShowJobList()
+        {
+            HttpResponseMessage response = await client.GetAsync(api);
+            string data = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            List<Job> list = JsonSerializer.Deserialize<List<Job>>(data, options);
+            return View(list);
+        }
+        public async Task<IActionResult> UpdateStatus(int id, string status)
+        {
+            Job job = new Job();
+            HttpResponseMessage response1 = await client.GetAsync(api + "/" + id);
+            if (response1.IsSuccessStatusCode)
+            {
+                string data1 = await response1.Content.ReadAsStringAsync();                
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };                
+                job = JsonSerializer.Deserialize<Job>(data1, options);
+                job.Status = status;
+                string data2 = JsonSerializer.Serialize(job);
+                var content = new StringContent(data2, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage response2 = await client.PutAsync(api + "/" + id, content);
+                if (response2.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("ShowJobList");
+                }
+            }
+            return Ok();
         }
     }
 }

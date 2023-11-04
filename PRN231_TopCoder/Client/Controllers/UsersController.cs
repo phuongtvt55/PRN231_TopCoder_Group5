@@ -28,19 +28,30 @@ namespace Client.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Register(BusinessProfile business)
+        public IActionResult Register(User user)
         {
             try
             {
-                business.User.UserType = HttpContext.Session.GetString("MyRole");
-                string data = JsonConvert.SerializeObject(business);
+                var role = HttpContext.Session.GetString("MyRole");
+                user.UserType = role;
+                user.IsDelete = 0;
+                user.Password = BCrypt.Net.BCrypt.HashPassword(Request.Form["Password"]);
+                string data = JsonConvert.SerializeObject(user);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = client.PostAsync(baseAddress + "/BusinessProfiles", content).Result;
-
+                HttpResponseMessage response = null;
+                if (role == "Employer")
+                {
+                    response = client.PostAsync(baseAddress + "/BusinessProfiles", content).Result;                    
+                }
+                else
+                {
+                    response = client.PostAsync(baseAddress + "/Users", content).Result;
+                }
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Login", "Users");
                 }
+
             }
             catch (Exception ex)
             {
@@ -56,29 +67,42 @@ namespace Client.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(BusinessProfile business)
+        public IActionResult Login(User user)
         {
-            var email = Request.Form["User.Email"];
-            var pass = Request.Form["User.Password"];
-            List<BusinessProfile> businessList = new List<BusinessProfile>();
-            HttpResponseMessage response = client.GetAsync(baseAddress + "/BusinessProfiles").Result;
+            var role = HttpContext.Session.GetString("MyRole");
+            var email = Request.Form["Email"];
+            var pass = Request.Form["Password"];
+            List<User> userList = new List<User>();
+            HttpResponseMessage response = client.GetAsync(baseAddress + "/Users").Result;
 
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                businessList = JsonConvert.DeserializeObject<List<BusinessProfile>>(data);
-                foreach (var item in businessList)
+                userList = JsonConvert.DeserializeObject<List<User>>(data);
+                foreach (var item in userList)
                 {
-                    if (item.User.Email == email && item.User.Password == pass)
-                    {
-                        HttpContext.Session.SetInt32("UserId", item.User.UserId);
-                        HttpContext.Session.SetInt32("BussinessId", item.BusinessId);
-                        HttpContext.Session.SetString("Username", item.User.UserName);
-                        HttpContext.Session.SetString("ImageProfile", item.User.ImageProfile);
-                        return RedirectToAction("Index", "Home");
+                    if (item.Email == email && BCrypt.Net.BCrypt.Verify(pass, item.Password))
+                    { 
+                        if (item.UserType == role)
+                        {
+                            HttpContext.Session.SetInt32("UserId", item.UserId);
+							HttpContext.Session.SetString("Username", item.UserName);
+							HttpContext.Session.SetString("ImageProfile", item.ImageProfile);
+							if (item.UserType == "Employer")
+                            {
+								HttpContext.Session.SetInt32("BusinessId", item.BusinessProfile.BusinessId);
+							}                            
+                            return RedirectToAction("Index", "Home");
+                        }          
+                        else
+                        {
+                            TempData["errorMessage"] = "This account is not existed";
+                            return View();
+                        }
                     }
                     else
                     {
+                        TempData["errorMessage"] = "This account is incorrect";
                         return View();
                     }
                 }
@@ -88,33 +112,37 @@ namespace Client.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("MyRole");
+            HttpContext.Session.Remove("UserId");
+            HttpContext.Session.Remove("BusinessId");
+            HttpContext.Session.Remove("Username");
+            HttpContext.Session.Remove("ImageProfile");
             return View("Login");
         }
         [HttpGet]
         public IActionResult Index()
         {
-            List<BusinessProfile> businessList = new List<BusinessProfile>();
-            HttpResponseMessage response = client.GetAsync(baseAddress + "/BusinessProfiles").Result;
+            List<User> users = new List<User>();
+            HttpResponseMessage response = client.GetAsync(baseAddress + "/Users").Result;
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                businessList = JsonConvert.DeserializeObject<List<BusinessProfile>>(data);
+				users = JsonConvert.DeserializeObject<List<User>>(data);
             }
-            return View(businessList);
+            return View(users);
         }
         [HttpGet]
         public IActionResult Details(int id)
         {
             try
             {
-                BusinessProfile business = new BusinessProfile();
-                HttpResponseMessage response = client.GetAsync(baseAddress + "/BusinessProfiles/" + id).Result;
+                User user = new User();
+                HttpResponseMessage response = client.GetAsync(baseAddress + "/Users/" + id).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string data = response.Content.ReadAsStringAsync().Result;
-                    business = JsonConvert.DeserializeObject<BusinessProfile>(data);
+					user = JsonConvert.DeserializeObject<User>(data);
                 }
-                return View(business);
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -127,16 +155,16 @@ namespace Client.Controllers
         {
             try
             {
-                BusinessProfile business = new BusinessProfile();
-                HttpResponseMessage response = client.GetAsync(baseAddress + "/BusinessProfiles/" + id).Result;
+                User user = new User();
+                HttpResponseMessage response = client.GetAsync(baseAddress + "/Users/" + id).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string data = response.Content.ReadAsStringAsync().Result;
-                    business = JsonConvert.DeserializeObject<BusinessProfile>(data);
-                    ViewData["ImgSrc"] = business.User.ImageProfile;
-					ViewData["CvSrc"] = business.User.Cvprofile;
+                    user = JsonConvert.DeserializeObject<User>(data);
+                    ViewData["ImgSrc"] = user.ImageProfile;
+					ViewData["CvSrc"] = user.Cvprofile;
 				}
-                return View(business);
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -145,19 +173,18 @@ namespace Client.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> EditAsync(BusinessProfile business, IFormFile image, IFormFile cv)
+        public async Task<IActionResult> EditAsync(User user, IFormFile image, IFormFile cv)
         {
             try
             {
                 if (image != null || cv != null)
                 {
-                    business.User.ImageProfile = await UploadImage(image);
-                    business.User.Cvprofile = await UploadCv(cv);
+                    user.ImageProfile = await UploadImage(image);
+                    user.Cvprofile = await UploadCv(cv);
                 }
-
-                string data = JsonConvert.SerializeObject(business);
+                string data = JsonConvert.SerializeObject(user);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = client.PutAsync(baseAddress + "/BusinessProfiles/" + business.BusinessId, content).Result;
+                HttpResponseMessage response = client.PutAsync(baseAddress + "/Users/" + user.UserId, content).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index");
@@ -175,14 +202,14 @@ namespace Client.Controllers
         {
             try
             {
-                BusinessProfile business = new BusinessProfile();
-                HttpResponseMessage response = client.GetAsync(baseAddress + "/BusinessProfiles/" + id).Result;
+                User user = new User();
+                HttpResponseMessage response = client.GetAsync(baseAddress + "/Users/" + id).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string data = response.Content.ReadAsStringAsync().Result;
-                    business = JsonConvert.DeserializeObject<BusinessProfile>(data);
+                    user = JsonConvert.DeserializeObject<User>(data);
                 }
-                return View(business);
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -195,7 +222,7 @@ namespace Client.Controllers
         {
             try
             {
-                HttpResponseMessage response = client.DeleteAsync(baseAddress + "/BusinessProfiles/" + id).Result;
+                HttpResponseMessage response = client.DeleteAsync(baseAddress + "/Users/" + id).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index");

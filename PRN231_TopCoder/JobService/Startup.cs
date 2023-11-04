@@ -59,9 +59,9 @@ namespace JobService
 
             app.UseCors(builder =>
             {
-                builder.WithOrigins("https://localhost:5001")
+                builder.AllowAnyOrigin()
                        .AllowAnyHeader()
-                       .AllowAnyMethod();
+                       .AllowAnyMethod();                
             });
 
             app.UseEndpoints(endpoints =>
