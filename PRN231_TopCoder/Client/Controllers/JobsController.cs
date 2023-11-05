@@ -51,7 +51,7 @@ namespace Client.Controllers
             var businessId = HttpContext.Session.GetInt32("BusinessId");
             var role = HttpContext.Session.GetString("MyRole");
             //**
-            if(role == null)
+            if(userId == null)
             {
                 TempData["errorMessage"] = "Please login first";
                 return RedirectToAction("SetSessionData", "Users", new {id = 1});
@@ -77,6 +77,7 @@ namespace Client.Controllers
                 {
                     list.Add(item.Job);
                 }
+                list = list.Where(s => s.IsDelete.Equals(1) && s.Status.Equals("Accept")).ToList();
                 ViewData["Category"] = _context.Categories.ToList();
                 ViewData["Wishlist"] = _context.Wishlists.ToList();
                 ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
@@ -106,6 +107,7 @@ namespace Client.Controllers
                 {
                     list.Add(item.Job);
                 }
+                list = list.Where(s => s.IsDelete.Equals(1) && s.Status.Equals("Accept")).ToList();
                 ViewData["Category"] = _context.Categories.ToList();
                 ViewData["Wishlist"] = _context.Wishlists.ToList();
                 ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
@@ -139,6 +141,7 @@ namespace Client.Controllers
                 {
                     list.Add(item.Job);
                 }
+                list = list.Where(s => s.IsDelete.Equals(1) && s.Status.Equals("Accept")).ToList();
                 ViewData["Category"] = _context.Categories.ToList();
                 ViewData["Wishlist"] = _context.Wishlists.ToList();
                 ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
@@ -361,16 +364,17 @@ namespace Client.Controllers
             {
                 return NotFound();
             }
+            var jobEdit = _context.Jobs.SingleOrDefault(i => i.JobId == id);
             string[] selectedCategories = Request.Form["category"];
             string[] selectedRanks = Request.Form["rank"];
             string salaryFrom = Request.Form["SalaryFrom"];
             string salaryTo = Request.Form["SalaryTo"];
             var businessId = HttpContext.Session.GetInt32("BusinessId");
             job.BusinessId = businessId;
-            job.PostDate = DateTime.Today;
+            job.PostDate = jobEdit.PostDate;
             job.Salary = salaryFrom + "-" + salaryTo;
             job.IsDelete = 1;
-            job.Status = "Waiting";
+            job.Status = jobEdit.Status;
             string data = JsonSerializer.Serialize(job);
             var content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(api + "/" + id, content);
