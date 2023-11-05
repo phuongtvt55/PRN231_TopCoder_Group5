@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BlogService.Models.Blog>
+﻿@model IEnumerable<JobApplicationService.Models.JobApplication>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,7 +14,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.BlogTitle)
+                @Html.DisplayNameFor(model => model.ApplyDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Status)
@@ -30,7 +30,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BlogTitle)
+                    @Html.DisplayFor(modelItem => item.ApplyDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
@@ -41,13 +41,13 @@
                 <td>
                     @if (item.Status == "Waiting")
                     {
-                        <input type="submit" class="statusButton btn btn-success" value="Accept" data-id="@item.BlogId" />
-                        <input type="submit" class="statusButton btn btn-danger" value="Deny" data-id="@item.BlogId" />
-                        <a asp-action="Details" asp-route-id="@item.BlogId" class="fa-solid fa-circle-info"></a>
+                        <input type="submit" class="statusButton btn btn-success" value="Accept" data-id="@item.ApplicationId" />
+                        <input type="submit" class="statusButton btn btn-danger" value="Deny" data-id="@item.ApplicationId" />
+                        <a asp-action="Details" asp-route-id="@item.ApplicationId" class="fa-solid fa-circle-info"></a>
                     }
                     else
                     {
-                        <a asp-action="Details" asp-route-id="@item.BlogId" class="fa-solid fa-circle-info"></a>
+                        <a asp-action="Details" asp-route-id="@item.ApplicationId" class="fa-solid fa-circle-info"></a>
                     }
                 </td>
             </tr>
@@ -63,7 +63,7 @@
             var buttonValue = $(this).val();
 
             var confirmText = buttonValue === "Accept" ? "Yes, accept it!" : "Yes, deny it!";
-            var successText = buttonValue === "Accept" ? "Blog has been accepted." : "Blog has been denied.";
+            var successText = buttonValue === "Accept" ? "Job Application has been accepted." : "Job Application has been denied.";
             var icon = buttonValue === "Accept" ? "success" : "error";
 
             Swal.fire({
@@ -77,7 +77,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/Blogs/UpdateStatus/" + id + "?Status=" + buttonValue,
+                        url: "/JobApplication/UpdateStatus/" + id + "?Status=" + buttonValue,
                         type: "GET",
                         success: function (result) {
                             Swal.fire(

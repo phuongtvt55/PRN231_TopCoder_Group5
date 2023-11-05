@@ -34,7 +34,7 @@ namespace Client.Controllers
             {
                 var role = HttpContext.Session.GetString("MyRole");
                 user.UserType = role;
-                user.IsDelete = 0;
+                user.IsDelete = 1;
                 user.Password = BCrypt.Net.BCrypt.HashPassword(Request.Form["Password"]);
                 string data = JsonConvert.SerializeObject(user);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -67,48 +67,50 @@ namespace Client.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(User user)
+        public IActionResult Login(UserLoginModel model)
         {
-            var role = HttpContext.Session.GetString("MyRole");
-            var email = Request.Form["Email"];
-            var pass = Request.Form["Password"];
-            List<User> userList = new List<User>();
-            HttpResponseMessage response = client.GetAsync(baseAddress + "/Users").Result;
+            var modelId = HttpContext.Session.GetInt32("ModelId");
+			var role = HttpContext.Session.GetString("MyRole");            
+            string data1 = JsonConvert.SerializeObject(model);
+            StringContent content = new StringContent(data1, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = client.PostAsync(baseAddress + "/Users/" + modelId, content).Result;
+            User user = new User();
 
             if (response.IsSuccessStatusCode)
             {
-                string data = response.Content.ReadAsStringAsync().Result;
-                userList = JsonConvert.DeserializeObject<List<User>>(data);
+                string data2 = response.Content.ReadAsStringAsync().Result;
+                user = JsonConvert.DeserializeObject<User>(data2);
                 var check = false;
-                foreach (var item in userList)
+                if (user.UserType == role)
                 {
-                    if (item.Email == email && BCrypt.Net.BCrypt.Verify(pass, item.Password))
-                    { 
-                        if (item.UserType == role)
-                        {
-                            check = true;
-                            HttpContext.Session.SetInt32("UserId", item.UserId);
-							HttpContext.Session.SetString("Username", item.UserName);
-                            if(item.BusinessProfile == null)
-                            {
-                                HttpContext.Session.SetInt32("BusinessId", 0);
-                            }
-                            else
-                            {
-                                HttpContext.Session.SetInt32("BusinessId", item.BusinessProfile.BusinessId);
-                            }
-                            if(item.ImageProfile == null)
-                            {
-                                HttpContext.Session.SetString("ImageProfile", "0");
-                            }
-                            else
-                            {
-                                HttpContext.Session.SetString("ImageProfile", item.ImageProfile);
-                            }               
-                            return RedirectToAction("Index", "Jobs");
-                        }          
+                    check = true;
+                    HttpContext.Session.SetInt32("UserId", user.UserId);
+                    HttpContext.Session.SetString("Username", user.UserName);
+                    if (user.BusinessProfile == null)
+                    {
+                        HttpContext.Session.SetInt32("BusinessId", 0);
                     }
+                    else
+                    {
+                        HttpContext.Session.SetInt32("BusinessId", user.BusinessProfile.BusinessId);
+                    }
+                    if (user.ImageProfile == null)
+                    {
+                        HttpContext.Session.SetString("ImageProfile", "0");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("ImageProfile", user.ImageProfile);
+                    }
+                    return RedirectToAction("Index", "Jobs");
                 }
+                if (user.UserType == "Admin")
+                {
+					HttpContext.Session.SetString("MyRole", user.UserType);
+					HttpContext.Session.SetInt32("UserId", user.UserId);
+					HttpContext.Session.SetString("Username", user.UserName);
+					return RedirectToAction("Index", "Home");
+				}
                 if (!check)
                 {
                     TempData["errorMessage"] = "This account is not existed";
@@ -119,12 +121,12 @@ namespace Client.Controllers
         }
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("MyRole");
+			HttpContext.Session.Remove("MyRole");
             HttpContext.Session.Remove("UserId");
             HttpContext.Session.Remove("BusinessId");
             HttpContext.Session.Remove("Username");
             HttpContext.Session.Remove("ImageProfile");
-            return View("Login");
+			return View("Login");
         }
         [HttpGet]
         public IActionResult Index()
@@ -233,7 +235,7 @@ namespace Client.Controllers
                 HttpResponseMessage response = client.DeleteAsync(baseAddress + "/Users/" + id).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Jobs");
                 }
             }
             catch (Exception ex)
@@ -246,9 +248,10 @@ namespace Client.Controllers
         [HttpGet]
         public ActionResult SetSessionData(int id)
         {
-            if (id == 1)
-            {
-                HttpContext.Session.SetString("MyRole", "User");
+			HttpContext.Session.SetInt32("ModelId", id);
+			if (id == 1)
+            {                
+				HttpContext.Session.SetString("MyRole", "User");
             }
             else
             {
@@ -260,7 +263,7 @@ namespace Client.Controllers
         private async Task<string> UploadImage(IFormFile image)
         {
             if (image == null || image.Length == 0)
-                return "ErrorImg";
+                return "NULL";
 
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
@@ -276,7 +279,7 @@ namespace Client.Controllers
         private async Task<string> UploadCv(IFormFile cv)
         {
             if (cv == null || cv.Length == 0)
-                return "ErrorImg";
+                return "NULL";
 
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(cv.FileName);
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/cv", fileName);

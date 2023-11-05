@@ -34,16 +34,16 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Jobs" asp-action="Index">Job</a>
-                        </li>   
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="ShowBlogList">Blogs</a>
                         </li>
                         @{
                             if (role == "Admin")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
-                                </li>                                
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="JobApplication" asp-action="ShowApplicationList">Applications</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="ShowBlogList">Blogs</a>
                                 </li>
@@ -53,6 +53,9 @@
                             }
                             if (userId != null)
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Edit">Users</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Logout">Logout</a>
                                 </li>

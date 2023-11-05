@@ -13,6 +13,10 @@ using Microsoft.AspNetCore.Http;
 using UserService.Models;
 using System.Collections;
 using System.IO;
+using System.Net.Mail;
+using Microsoft.Extensions.Options;
+using JobApplicationService.Models;
+using System.Text;
 
 namespace Client.Controllers
 {
@@ -193,7 +197,15 @@ namespace Client.Controllers
                 ViewData["Business"] = business;
                 var userId = HttpContext.Session.GetInt32("UserId");
                 var businessId = HttpContext.Session.GetInt32("BusinessId");
-                var role = HttpContext.Session.GetString("MyRole");                
+                var role = HttpContext.Session.GetString("MyRole");
+                HttpResponseMessage response1 = await client.GetAsync("https://localhost:44359/api/Users/" + userId);
+                if (response1.IsSuccessStatusCode)
+                {
+                    string data1 = await response1.Content.ReadAsStringAsync();
+                    User user = JsonSerializer.Deserialize<User>(data1, options);
+                    ViewData["CvSrc"] = user.Cvprofile;
+                    ViewData["Email"] = user.Email;                    
+                }
                 return View(job);
             }
             return NotFound();
@@ -484,6 +496,66 @@ namespace Client.Controllers
                 {
                     return RedirectToAction("ShowJobList");
                 }
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApplyJob(JobApplication jobApp)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            HttpResponseMessage response = await client.GetAsync("https://localhost:44359/api/Users/" + userId);
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                User user = JsonSerializer.Deserialize<User>(data, options);
+
+                jobApp.UserId = userId;
+                jobApp.ApplyDate = DateTime.Now;
+                jobApp.IsDelete = 1;
+                jobApp.Status = "Waiting";
+
+                string data1 = JsonSerializer.Serialize(jobApp);
+                var content = new StringContent(data1, Encoding.UTF8, "application/json");
+                HttpResponseMessage response1 = await client.PostAsync("https://localhost:44369/api/JobApplication/PostJobApplication", content);
+                if (response1.IsSuccessStatusCode)
+                {
+                    //Send application to email 
+                    //Email & Content
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add("nqhuy375@gmail.com");
+                    //mail.To.Add("huonglh3@fpt.edu.vn");
+                    mail.From = new MailAddress(user.Email);
+                    mail.Subject = "Application Submission";
+                    mail.Body = Request.Form["textLetter"];
+                    mail.IsBodyHtml = true;
+
+                    //Attach file
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/", user.Cvprofile);
+                    Attachment attachment = new Attachment(path);
+                    mail.Attachments.Add(attachment);
+
+                    //Server Details
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.EnableSsl = true;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                    //Credentials
+                    System.Net.NetworkCredential credentials = new System.Net.NetworkCredential();
+                    credentials.UserName = user.Email;
+                    credentials.Password = "lixi cghr hixf pxjs";
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = credentials;
+                    smtp.Send(mail);
+                    return View("Index");
+                }                               
             }
             return Ok();
         }

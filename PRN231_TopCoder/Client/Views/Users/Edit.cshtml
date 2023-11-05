@@ -18,6 +18,9 @@
             <input asp-for="BusinessProfile.BusinessId" type="hidden" />
             <input asp-for="UserId" type="hidden" />
             <input asp-for="BusinessProfile.UserId" type="hidden" />
+            <input asp-for="Password" type="hidden" />
+            <input asp-for="UserType" type="hidden" />
+            <input asp-for="IsDelete" type="hidden" />
             <div class="form-group">
                 <label asp-for="UserName" class="control-label col-md-2"></label>
                 <input asp-for="UserName" class="form-control col-md-10" />
@@ -28,12 +31,6 @@
                 <label asp-for="Email" class="control-label col-md-2"></label>
                 <input asp-for="Email" class="form-control col-md-10" />
                 <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Password" class="control-label col-md-2"></label>
-                <input asp-for="Password" class="form-control col-md-10" />
-                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="form-group">
