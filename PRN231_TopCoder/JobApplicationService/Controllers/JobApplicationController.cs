@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace JobApplicationService.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class JobApplicationController : ControllerBase
     {

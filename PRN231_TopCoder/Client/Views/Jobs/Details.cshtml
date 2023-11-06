@@ -153,26 +153,21 @@
 
                         <div class="">
                             <h4 class="mb-4">Apply For The Job</h4>
-                            <form>
+                            <form asp-action="ApplyJob" runat="server">
                                 <div class="row g-3">
+                                    <input asp-for="@Model.JobId" type="hidden"/>
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="form-control" placeholder="Your Name">
+                                        <input type="text" class="form-control" placeholder="Your Name" asp-for="@userName">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <input type="email" class="form-control" placeholder="Your Email">
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <input type="text" class="form-control" placeholder="Portfolio Website">
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <input type="file" class="form-control bg-white">
+                                        <input type="text" class="form-control" placeholder="Your Email" value="@ViewBag.Email" id="email" runat="server">
                                     </div>
                                     <div class="col-12">
-                                        <textarea class="form-control" rows="5" placeholder="Coverletter"></textarea>
+                                        <textarea class="form-control" rows="5" placeholder="Coverletter" id="textLetter" name="textLetter" runat="server"></textarea>
                                     </div>
                                     <div class="col-12">
                                         <input type="hidden" id="type" value="@role"/>
-                                        <input type="button" class="btn btn-primary w-100" id="apply" value="Apply Now"/>
+                                        <input type="submit" class="btn btn-primary w-100" id="apply" value="Apply Now"/>
                                     </div>
                                 </div>
                             </form>
@@ -292,6 +287,13 @@
                     icon: 'error',
                     title: 'Oops...',
                     text: `Only for Appliers`,
+                })
+            }
+            else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Apply successfully',
+                    text: `Check your email to see the result. Gud luck`,
                 })
             }
         })

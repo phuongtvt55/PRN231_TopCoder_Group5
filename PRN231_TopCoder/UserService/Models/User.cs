@@ -14,8 +14,6 @@ namespace UserService.Models
         public string UserName { get; set; }
         [Required]
         [DataType(DataType.Password)]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$",
-        ErrorMessage = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character.")]
         public string Password { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
