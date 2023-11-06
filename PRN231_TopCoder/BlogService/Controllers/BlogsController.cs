@@ -24,9 +24,14 @@ namespace BlogService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Blog>>> GetBlogs()
         {
-            return await _context.Blogs.ToListAsync();
+            return await _context.Blogs.Where(i => i.IsDelete.Equals(1) && i.Status.Equals("Accept")).ToListAsync();
         }
 
+        [HttpGet("GetBlogAdmin")]
+        public async Task<ActionResult<IEnumerable<Blog>>> GetBlogAdmin()
+        {
+            return await _context.Blogs.Where(i => i.IsDelete.Equals(1)).ToListAsync();
+        }
         // GET: api/Blogs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Blog>> GetBlog(int id)
@@ -46,11 +51,7 @@ namespace BlogService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBlog(int id, Blog blog)
         {
-            if (id != blog.BlogId)
-            {
-                return BadRequest();
-            }
-
+            blog.BlogId = id;
             _context.Entry(blog).State = EntityState.Modified;
 
             try
@@ -92,8 +93,8 @@ namespace BlogService.Controllers
             {
                 return NotFound();
             }
-
-            _context.Blogs.Remove(blog);
+            blog.IsDelete = 0;
+            _context.Blogs.Update(blog);
             await _context.SaveChangesAsync();
 
             return NoContent();

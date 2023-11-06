@@ -1,32 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
 using System;
 using JobApplicationService.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
+using System.Text.Json;
 
 namespace Client.Controllers
 {
     public class JobApplicationController : Controller
     {
-        Uri baseAddress = new Uri("https://localhost:44369/api");
+        Uri baseAddress = new Uri("https://localhost:44369/api/JobApplication");
         private readonly HttpClient _client;
-
-
-        //private string ProductApiUrl = "";
-        private readonly jobApplicationServiceContext _db;
 
         // constructor
         public JobApplicationController()
         {
             _client = new HttpClient();
             _client.BaseAddress = baseAddress;
-            //tao db de truy cap vao database
-            _db = new jobApplicationServiceContext();
         }
 
         //------------------Index------------------------
@@ -34,7 +27,7 @@ namespace Client.Controllers
         public async Task<IActionResult> Index()
         {
             List<JobApplication> applicationList = new List<JobApplication>();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/JobApplication/GetAllJobApplications").Result;
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress).Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -64,7 +57,7 @@ namespace Client.Controllers
             {
                 string data = JsonConvert.SerializeObject(jobA);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _client.PostAsync(_client.BaseAddress + "/JobApplication/PostJobApplication", content).Result;
+                HttpResponseMessage response = _client.PostAsync(_client.BaseAddress, content).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -86,8 +79,7 @@ namespace Client.Controllers
             try
             {
                 JobApplication jobA = new JobApplication();
-                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress +
-                    "/JobApplication/GetJobApplication/" + id).Result;
+                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/" + id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -113,8 +105,7 @@ namespace Client.Controllers
                 string data = JsonConvert.SerializeObject(jobA);
                 StringContent content = new StringContent(data, Encoding.UTF8,
                     "application/json");
-                HttpResponseMessage response = _client.PutAsync(_client.BaseAddress +
-                    "/JobApplication/PutJobApplication/" + jobA.JobId, content).Result;
+                HttpResponseMessage response = _client.PutAsync(_client.BaseAddress + "/" + jobA.JobId, content).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -138,8 +129,7 @@ namespace Client.Controllers
             try
             {
                 JobApplication jobA = new JobApplication();
-                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress +
-                    "/JobApplication/GetJobApplication/" + id).Result;
+                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/" + id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -162,8 +152,7 @@ namespace Client.Controllers
             try
             {
                 JobApplication jobA = new JobApplication();
-                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress +
-                    "/JobApplication/GetJobApplication/" + id).Result;
+                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/" + id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -185,8 +174,7 @@ namespace Client.Controllers
         {
             try
             {
-                HttpResponseMessage response = _client.DeleteAsync(_client.BaseAddress +
-                        "/JobApplication/Delete/" + ApplicationId).Result;
+                HttpResponseMessage response = _client.DeleteAsync(_client.BaseAddress + "/" + ApplicationId).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -210,8 +198,7 @@ namespace Client.Controllers
             try
             {
                 JobApplication jobA = new JobApplication();
-                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress +
-                    "/JobApplication/GetJobApplication/" + id).Result;
+                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/" + id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -228,6 +215,31 @@ namespace Client.Controllers
 
         }
 
-
+        public async Task<IActionResult> ShowApplicationList()
+        {
+            HttpResponseMessage response = await _client.GetAsync(baseAddress);
+            string data = await response.Content.ReadAsStringAsync();
+            List<JobApplication> list = JsonConvert.DeserializeObject<List<JobApplication>>(data);
+            return View(list);
+        }
+        public async Task<IActionResult> UpdateStatus(int id, string status)
+        {
+            JobApplication jobApp = new JobApplication();
+            HttpResponseMessage response1 = await _client.GetAsync(baseAddress + "/" + id);
+            if (response1.IsSuccessStatusCode)
+            {
+                string data1 = await response1.Content.ReadAsStringAsync();
+                jobApp = JsonConvert.DeserializeObject<JobApplication>(data1);
+                jobApp.Status = status;
+                string data2 = JsonConvert.SerializeObject(jobApp);
+                var content = new StringContent(data2, Encoding.UTF8, "application/json");
+                HttpResponseMessage response2 = await _client.PutAsync(baseAddress + "/" + id, content);
+                if (response2.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("ShowJobList");
+                }
+            }
+            return Ok();
+        }
     }
 }

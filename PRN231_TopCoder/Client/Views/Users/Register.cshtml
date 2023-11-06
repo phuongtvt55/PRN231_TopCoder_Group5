@@ -24,23 +24,28 @@
 				</div>
 				<div class="form-group">
 					<label for="">Full Name:</label>
-					<input asp-for="UserName" type="text" class="form-control" data-validation="length alphanumeric" data-validation-length="3-12">
+					<input asp-for="UserName" type="text" class="form-control" data-validation="length alphanumeric" data-validation-length="1-3">
+					<span asp-validation-for="UserName" class="text-danger"></span>
 				</div>
 				<div class="form-group">
 					<label for="">E-mail:</label>
 					<input asp-for="Email" type="text" class="form-control" data-validation="email">
+					<span asp-validation-for="Email" class="text-danger"></span>
 				</div>
 				<div class="form-group">
 					<label for="">Password:</label>
-					<input asp-for="Password" type="password" class="form-control" data-validation="length" data-validation-length="min8">
+					<input asp-for="Password" type="password" class="form-control" data-validation="length" data-validation-length="min6">
+					<span asp-validation-for="Password" class="text-danger"></span>
 				</div>
 				<div class="form-group">
 					<label for="">Address:</label>
 					<input asp-for="Address" type="text" class="form-control" data-validation="length alphanumeric">
+					<span asp-validation-for="Address" class="text-danger"></span>
 				</div>
 				<div class="form-group">
 					<label for="">Phone Number:</label>
 					<input asp-for="Phone" type="tel" class="form-control" data-validation="phone">
+					<span asp-validation-for="Phone" class="text-danger"></span>
 				</div>
 				@if (role == "Employer")
 				{

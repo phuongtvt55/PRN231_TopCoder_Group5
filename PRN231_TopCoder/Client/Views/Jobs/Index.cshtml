@@ -65,7 +65,6 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto p-4 p-lg-0">
                     <a asp-action="Index" class="nav-item nav-link active">Home</a>
-                    <a href="about.html" class="nav-item nav-link">About</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
                         <div class="dropdown-menu rounded-0 m-0">
@@ -79,15 +78,9 @@
                             }
                         </div>
                     </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="category.html" class="dropdown-item">Job Category</a>
-                            <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                            <a href="404.html" class="dropdown-item">404</a>
-                        </div>
+                    <div class="nav-item">
+                        <a asp-action="Index" asp-controller="Blogs" target="_blank" class="nav-link">Blogs</a>
                     </div>
-                    <a href="contact.html" class="nav-item nav-link">Contact</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">@userName</a>
                         <div class="dropdown-menu rounded-0 m-0">
@@ -242,12 +235,30 @@
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
                             @foreach(var item in Model)
-                            {                                
-                                    <div class="job-item job-feature p-4 mb-4">
-                                        <div class="row g-4">
-                                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                                <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 100px; height: 100px;">
-                                                <div class="text-start ps-4">
+                            {
+                                <div class="job-item job-feature p-4 mb-4">
+                                    <div class="row g-4">
+                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                            @{
+                                                var checkImg = true;
+                                            }
+                                            @foreach(var img in ViewBag.User)
+                                            {
+
+                                                @if (item.BusinessId == img.BusinessId)
+                                                {
+                                                    if(img.User.ImageProfile == null){
+                                                        <img class="flex-shrink-0 img-fluid border rounded" src="/img/logo_title.png" alt="" style="width: 100px; height: 100px;">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="flex-shrink-0 img-fluid border rounded" src="/@img.User.ImageProfile" alt="" style="width: 100px; height: 100px;">
+                                                    }
+                                                    checkImg = false;
+                                                    break;
+                                                }
+                                            }
+                                            <div class="text-start ps-4">
                                                     <h5 class="mb-3">@item.JobTitle</h5>
                                                     <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address</span>
                                                     <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>@item.ContractType</span>
@@ -315,7 +326,26 @@
                                     <div class="job-item job-fulltime p-4 mb-4">
                                         <div class="row g-4">
                                             <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                                <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 100px; height: 100px;">
+                                                @{
+                                                    var checkImg = true;
+                                                }
+                                                @foreach (var img in ViewBag.User)
+                                                {
+
+                                                    @if (item.BusinessId == img.BusinessId)
+                                                    {
+                                                        if (img.User.ImageProfile == null)
+                                                        {
+                                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/logo_title.png" alt="" style="width: 100px; height: 100px;">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="flex-shrink-0 img-fluid border rounded" src="/@img.User.ImageProfile" alt="" style="width: 100px; height: 100px;">
+                                                        }
+                                                        checkImg = false;
+                                                        break;
+                                                    }
+                                                }
                                                 <div class="text-start ps-4">
                                                     <h5 class="mb-3">@item.JobTitle</h5>
                                                     <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address</span>
@@ -385,7 +415,26 @@
                                     <div class="job-item job-parttime p-4 mb-4">
                                         <div class="row g-4">
                                             <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                                <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 100px; height: 100px;">
+                                                @{
+                                                    var checkImg = true;
+                                                }
+                                                @foreach (var img in ViewBag.User)
+                                                {
+
+                                                    @if (item.BusinessId == img.BusinessId)
+                                                    {
+                                                        if (img.User.ImageProfile == null)
+                                                        {
+                                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/logo_title.png" alt="" style="width: 100px; height: 100px;">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="flex-shrink-0 img-fluid border rounded" src="/@img.User.ImageProfile" alt="" style="width: 100px; height: 100px;">
+                                                        }
+                                                        checkImg = false;
+                                                        break;
+                                                    }
+                                                }
                                                 <div class="text-start ps-4">
                                                     <h5 class="mb-3">@item.JobTitle</h5>
                                                     <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address</span>

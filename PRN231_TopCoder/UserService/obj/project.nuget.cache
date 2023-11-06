@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "F10t6LPchsB+iOMP/qcO729UqhL2l0LCZhrz2Azcuk+aDHIpbYpTTNfrdChZvramT15yWUCBniD/+J1sWy9bEA==",
+  "dgSpecHash": "zMxLchhPue0ZNnHlNaICs/suKVnZ1repxv2LjT4fUD+fYjbuK2NQ+lgQ9NBIbc9TVplFLFtEClMrbxnSqAHPkQ==",
   "success": true,
   "projectFilePath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\UserService\\UserService.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ADMIN\\.nuget\\packages\\bcrypt.net\\0.1.0\\bcrypt.net.0.1.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\5.0.17\\microsoft.aspnetcore.jsonpatch.5.0.17.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\5.0.17\\microsoft.aspnetcore.mvc.newtonsoftjson.5.0.17.nupkg.sha512",
@@ -107,5 +108,16 @@
     "C:\\Users\\ADMIN\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BCrypt.Net 0.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net5.0'. This package may not be fully compatible with your project.",
+      "libraryId": "BCrypt.Net",
+      "targetGraphs": [
+        "net5.0"
+      ]
+    }
+  ]
 }

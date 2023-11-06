@@ -1,0 +1,99 @@
+﻿@model IEnumerable<JobApplicationService.Models.JobApplication>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Application List</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-striped table-condensed" id="userTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplyDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDelete)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApplyDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsDelete)
+                </td>
+                <td>
+                    @if (item.Status == "Waiting")
+                    {
+                        <input type="submit" class="statusButton btn btn-success" value="Accept" data-id="@item.ApplicationId" />
+                        <input type="submit" class="statusButton btn btn-danger" value="Deny" data-id="@item.ApplicationId" />
+                        <a asp-action="Details" asp-route-id="@item.ApplicationId" class="fa-solid fa-circle-info"></a>
+                    }
+                    else
+                    {
+                        <a asp-action="Details" asp-route-id="@item.ApplicationId" class="fa-solid fa-circle-info"></a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(".statusButton").click(function () {
+            var id = $(this).data("id");
+            var buttonValue = $(this).val();
+
+            var confirmText = buttonValue === "Accept" ? "Yes, accept it!" : "Yes, deny it!";
+            var successText = buttonValue === "Accept" ? "Job Application has been accepted." : "Job Application has been denied.";
+            var icon = buttonValue === "Accept" ? "success" : "error";
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: confirmText
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/JobApplication/UpdateStatus/" + id + "?Status=" + buttonValue,
+                        type: "GET",
+                        success: function (result) {
+                            Swal.fire(
+                                buttonValue + '!',
+                                successText,
+                                icon
+                            ).then(() => {
+                                location.reload();
+                            })
+                        },
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -29,9 +29,11 @@ namespace UserService.Controllers
 
         // GET: api/BusinessProfiles/5
         [HttpGet("{id}")]
-		public async Task<ActionResult<User>> GetUser(int id)
+		public async Task<ActionResult<User>> GetUserByBussinessId(int id)
 		{
-			var user = await _context.Users.Include(m => m.BusinessProfile).FirstOrDefaultAsync(m => m.UserId == id);
+			var user = await _context.Users.Include(m => m.BusinessProfile)
+                .Where(m => m.BusinessProfile.BusinessId == id)
+                .FirstOrDefaultAsync(m => m.BusinessProfile.BusinessId == id);
 
 			if (user == null)
 			{
@@ -79,12 +81,19 @@ namespace UserService.Controllers
         {
 			user.BusinessProfile.UserId = user.UserId;
 			user.BusinessProfile.IsDelete = 1;
-
+			var userList = await _context.Users.Include(m => m.BusinessProfile).ToListAsync();
+			foreach (var item in userList)
+			{
+				if (user.Email == item.Email)
+				{
+					return BadRequest("There is already have an account with this email");
+				}
+			}
 			_context.BusinessProfiles.Add(user.BusinessProfile);
 			_context.Users.Add(user);
 			await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            return Ok();
         }
 
         // DELETE: api/BusinessProfiles/5
