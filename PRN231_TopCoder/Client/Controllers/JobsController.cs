@@ -471,7 +471,7 @@ namespace Client.Controllers
 
         public async Task<IActionResult> ShowJobList()
         {
-            HttpResponseMessage response = await client.GetAsync(api);
+            HttpResponseMessage response = await client.GetAsync(api + "/GetJobList");
             string data = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
