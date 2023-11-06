@@ -1,48 +1,154 @@
 ﻿@model BlogService.Models.Blog
-
+@using Microsoft.AspNetCore.Http;
 @{
-    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_BlogLayout.cshtml";
+
 }
 
-<h1>Details</h1>
+<section class="s-content s-content--single">
+    <div class="row">
+        <div class="column large-12">
 
-<div>
-    <h4>Blog</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BlogTitle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BlogTitle)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BlogDetail)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BlogDetail)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDelete)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsDelete)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.BlogId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+            <article class="s-post entry format-standard">
+
+                <div class="s-content__media">
+                    <div class="s-content__post-thumb">
+                        <img src="/images/thumbs/single/standard/standard-1050.jpg"
+                             srcset="images/thumbs/single/standard/standard-2100.jpg 2100w,
+                                         images/thumbs/single/standard/standard-1050.jpg 1050w,
+                                         images/thumbs/single/standard/standard-525.jpg 525w" sizes="(max-width: 2100px) 100vw, 2100px" alt="">
+                    </div>
+                </div> <!-- end s-content__media -->
+
+                <div class="s-content__primary">
+
+                    <h2 class="s-content__title s-content__title--post">@Model.BlogTitle</h2>
+
+                    @Html.Raw(Model.BlogDetail)
+                </div> <!-- end s-content__primary -->
+            </article>
+
+        </div> <!-- end column -->
+    </div> <!-- end row -->
+    <!-- comments
+    ================================================== -->
+    <div class="comments-wrap">
+
+        <div id="comments" class="row">
+            <div class="column">
+
+                <h3>5 Comments</h3>
+
+                <!-- START commentlist -->
+                <ol class="commentlist" id="commentlist">
+
+                    
+                </ol>
+                <!-- END commentlist -->
+
+            </div> <!-- end col-full -->
+        </div> <!-- end comments -->
+
+
+        <div class="row comment-respond">
+
+            <!-- START respond -->
+            <div id="respond" class="column">
+
+                <h3>
+                    Add Comment
+                    <span>Your email address will not be published.</span>
+                </h3>
+
+                <form name="contactForm" id="contactForm" method="post" action="" autocomplete="off">
+                    <fieldset>
+                        <div class="message form-field">
+                            <textarea name="cMessage" id="cMessage" class="h-full-width" placeholder="Your Message"></textarea>
+                        </div>
+
+                        <input name="submit" id="submit" class="btn btn--primary btn-wide btn--large h-full-width" value="Add Comment" type="submit">
+
+                    </fieldset>
+                </form> <!-- end form -->
+
+            </div>
+            <!-- END respond-->
+
+        </div> <!-- end comment-respond -->
+
+    </div> <!-- end comments-wrap -->
+
+</section> <!-- end s-content -->
+<input type="hidden" value="@Model.BlogId" id="blogId"/>
+@section Scripts{
+    <script type="text/javascript">
+        //Load Data in Table when documents is ready
+        $(document).ready(function () {
+            var blogId = $('#blogId').val();
+            loadComment(blogId);
+        });
+
+        //Load Data function
+        function loadComment(blogId) {
+            $.ajax({
+                url: "https://localhost:44305/api/Comments/GetCommentByBlogId/" + blogId,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = '';
+                    var count = result.length;
+                    $.each(result, function (key, item) {
+                        getUser(item.userId, function (user) {
+                            html += `
+                                <li class="depth-1 comment">
+                                    <div class="comment__avatar">
+                                        <img class="avatar" src="${user.imageProfile}" alt="" width="50" height="50">
+                                    </div>
+                                    <div class="comment__content">
+                                        <div class="comment__info">
+                                            <div class="comment__author">${user.userName}</div>
+                                            <div class="comment__meta">
+                                                <div class="comment__time">${item.commentDate}</div>
+                                                <div class="comment__reply">
+                                                    <a class="comment-reply-link" href="#0">Reply</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="comment__text">
+                                            <p>${item.commentMsg}</p>
+                                        </div>
+                                    </div>
+                                </li> <!-- end comment level 1 -->
+                            `;
+
+                            count--;
+                            if (count === 0) {
+                                $('#commentlist').html(html);
+                            }
+                        });
+                    });
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+
+        function getUser(userId, callback) {
+            $.ajax({
+                url: "https://localhost:44359/api/Users/" + userId,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    callback(result);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+
+    </script>
+}

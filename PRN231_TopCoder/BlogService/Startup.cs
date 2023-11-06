@@ -38,6 +38,7 @@ namespace BlogService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlogService", Version = "v1" });
             });
             services.AddDbContext<blogServiceContext>();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +56,13 @@ namespace BlogService
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
 
             app.UseEndpoints(endpoints =>
             {
