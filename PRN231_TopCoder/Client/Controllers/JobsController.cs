@@ -216,7 +216,7 @@ namespace Client.Controllers
 
         // GET: Jobs/Create
         public IActionResult Create()
-        {
+            {
             ViewData["Category"] = _context.Categories.ToList();
             ViewData["Rank"] = _context.Ranks.ToList();
             return View();

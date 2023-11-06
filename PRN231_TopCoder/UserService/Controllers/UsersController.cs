@@ -54,7 +54,7 @@ namespace UserService.Controllers
             }
 
             // Find the user by email
-            var user = await _context.Users
+            var user = await _context.Users.Include(b => b.BusinessProfile)
                 .FirstOrDefaultAsync(u => u.Email == loginModel.Email);
 
             if (user == null)

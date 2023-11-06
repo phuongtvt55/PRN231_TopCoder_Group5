@@ -167,7 +167,7 @@
                                     </div>
                                     <div class="col-12">
                                         <input type="hidden" id="type" value="@role"/>
-                                        <input type="submit" class="btn btn-primary w-100" id="apply" value="Apply Now"/>
+                                        <input class="btn btn-primary w-100" id="apply" value="Apply Now"/>
                                     </div>
                                 </div>
                             </form>
@@ -294,7 +294,9 @@
                     icon: 'success',
                     title: 'Apply successfully',
                     text: `Check your email to see the result. Gud luck`,
-                })
+                }).then(() => {
+                    this.submit();
+                });
             }
         })
     </script>
