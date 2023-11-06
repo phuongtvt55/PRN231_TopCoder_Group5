@@ -523,7 +523,7 @@ namespace Client.Controllers
 
                 string data1 = JsonSerializer.Serialize(jobApp);
                 var content = new StringContent(data1, Encoding.UTF8, "application/json");
-                HttpResponseMessage response1 = await client.PostAsync("https://localhost:44369/api/JobApplication/PostJobApplication", content);
+                HttpResponseMessage response1 = await client.PostAsync("https://localhost:44369/api/JobApplication", content);
                 if (response1.IsSuccessStatusCode)
                 {
                     HttpResponseMessage response2 = await client.GetAsync("https://localhost:44359/api/BusinessProfiles/" + businessId);
@@ -561,11 +561,10 @@ namespace Client.Controllers
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = credentials;
                         smtp.Send(mail);
-                    }                    
-                    return View("Index");
+                    }             
                 }                               
             }
-            return Ok();
-        }
+			return View("Index");
+		}
     }
 }
