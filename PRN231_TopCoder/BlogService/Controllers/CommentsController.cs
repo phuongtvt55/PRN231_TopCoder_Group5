@@ -41,6 +41,13 @@ namespace BlogService.Controllers
             return comment;
         }
 
+        [HttpGet("GetCommentByBlogId/{id}")]
+        public async Task<IActionResult> GetCommentByBlogId(int id)
+        {
+            var list = _context.Comments.Where(j => j.BlogId == id).ToList();
+            return Ok(list);
+        }
+
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

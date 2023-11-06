@@ -552,21 +552,33 @@
 
             for (var i = fieldsToCheck.length - 1; i >= 0; i--) {
                 if (fieldsToCheck[i] === "") {
-                    errorMessage += '<b>' + '<span style="color: red;">' + fieldsToShow[i] + '</span>' + ' cannot be blank<br></b>';
+                    errorMessage = '<b>' + '<span style="color: red;">' + fieldsToShow[i] + '</span>' + ' cannot be blank<br></b>' + errorMessage;
+                    $(`#${fieldsToShow[i]}`).css('border-color', 'Red');
+                } else {
+                    $(`#${fieldsToShow[i]}`).css('border-color', 'lightgrey');
                 }
             }
-            
-            if(isNaN(salaryFrom) || salaryFrom <= 0){
+
+            if (isNaN(salaryFrom) || salaryFrom <= 0) {
                 errorMessage += '<b>' + '<span style="color: red;">Salary From</span>' + ' must be number and greater than 0<br></b>';
+                $('#SalaryFrom').css('border-color', "Red");
+            } else {
+                $('#SalaryFrom').css('border-color', "lightgrey");
             }
             if (isNaN(salaryTo) || salaryTo <= 0) {
                 errorMessage += '<b>' + '<span style="color: red;">Salary To</span>' + ' must be number and greater than 0<br></b>';
+                $('#SalaryTo').css('border-color', "Red");
+            } else {
+                $('#SalaryTo').css('border-color', "lightgrey");
             }
             if (isNaN(yearExperience) || yearExperience <= 0) {
                 errorMessage += '<b>' + '<span style="color: red;">Year experience</span>' + ' must be number and greater than 0<br></b>';
+                $('#YearExperience').css('border-color', "Red");
+            } else {
+                $('#YearExperience').css('border-color', "lightgrey");
             }
             if (salaryFrom >= salaryTo) {
-                errorMessage += 'Salary From must be less than Salary To';
+                errorMessage += '<b><span style="color: red;">Salary From</span> must be less than <span style="color: red;">Salary To</span></b>';
             }
 
             if (errorMessage !== "") {

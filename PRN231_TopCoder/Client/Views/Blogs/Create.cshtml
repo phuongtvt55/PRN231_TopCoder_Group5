@@ -1,7 +1,7 @@
 ﻿@model BlogService.Models.Blog
 
 @{
-    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_BlogLayout.cshtml";
 }
 
 <h1>Create</h1>
@@ -10,33 +10,24 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="BlogTitle" class="control-label"></label>
                 <input asp-for="BlogTitle" class="form-control" />
                 <span asp-validation-for="BlogTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BlogDetail" class="control-label"></label>
-                <input asp-for="BlogDetail" class="form-control" />
+                <label class="control-label">Thumbnail</label>
+                <input asp-for="Image" type="file" class="form-control" id="image" name="image" />
+                <img id="preview" src="#" width="150" height="100" class="hidden" />
+            </div>
+            <div class="form-group">
+                <label asp-for="BlogDetail" class="control-label">Detail</label>
+                <textarea id="edit" asp-for="BlogDetail" name="blogdetail"></textarea>
                 <span asp-validation-for="BlogDetail" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IsDelete" class="control-label"></label>
-                <input asp-for="IsDelete" class="form-control" />
-                <span asp-validation-for="IsDelete" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -47,7 +38,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

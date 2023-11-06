@@ -8,6 +8,9 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using BlogService.Models;
+using Microsoft.AspNetCore.Http;
+using System.Collections;
+using System.IO;
 
 namespace Client.Controllers
 {
@@ -16,14 +19,15 @@ namespace Client.Controllers
         private readonly blogServiceContext _context;
         private readonly HttpClient client;
         private string api = "";
-
-        public BlogsController()
+        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
+        public BlogsController(Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
         {
             _context = new blogServiceContext();
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             api = "https://localhost:44305/api/Blogs";
+            _hostingEnvironment = hostingEnvironment;
         }
         // GET: Blogs
         public async Task<IActionResult> Index()
@@ -35,6 +39,16 @@ namespace Client.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             List<Blog> list = JsonSerializer.Deserialize<List<Blog>>(data, options);
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var businessId = HttpContext.Session.GetInt32("BusinessId");
+            var role = HttpContext.Session.GetString("MyRole");
+            //**
+            if (userId == null)
+            {
+                TempData["errorMessage"] = "Please login first";
+                return RedirectToAction("SetSessionData", "Users", new { id = 1 });
+            }
+            ViewData["UserId"] = userId;
             return View(list);
         }
 
@@ -73,8 +87,16 @@ namespace Client.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Blog blog)
+        public async Task<IActionResult> Create(Blog blog, IFormFile image)
         {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (image == null || image.Length == 0)
+                return View();
+
+            blog.Image = await UploadImage(image);
+            blog.UserId = userId;
+            blog.Status = "Waiting";
+            blog.IsDelete = 1;
             string data = JsonSerializer.Serialize(blog);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(api, content);
@@ -84,7 +106,6 @@ namespace Client.Controllers
             }
             return View(blog);
         }
-
 
         // GET: Blogs/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -114,11 +135,20 @@ namespace Client.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Blog blog)
+        public async Task<IActionResult> Edit(int id, Blog blog, IFormFile image)
         {
+            if (image == null || image.Length == 0)
+                return View();
+
+            blog.Image = await UploadImage(image);
+            var userId = HttpContext.Session.GetInt32("UserId");
+            blog.UserId = userId;
+            var blogEdit = _context.Blogs.SingleOrDefault(i => i.BlogId == id);
+            blog.Status = blogEdit.Status;
+            blog.IsDelete = blogEdit.IsDelete;
             string data = JsonSerializer.Serialize(blog);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PutAsync(api, content);
+            HttpResponseMessage response = await client.PutAsync(api + "/" + id, content);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -196,6 +226,21 @@ namespace Client.Controllers
                 }
             }
             return Ok();
+        }
+
+        public async Task<string> UploadImage(IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+                return "ErrorImg";
+
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/blogUploads", fileName);
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            return "blogUploads/" + fileName;
         }
     }
 }

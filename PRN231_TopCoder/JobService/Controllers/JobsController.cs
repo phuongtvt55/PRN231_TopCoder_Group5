@@ -24,7 +24,7 @@ namespace JobService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Job>>> GetJobs()
         {
-            return await _context.Jobs.Where(s => s.IsDelete.Equals(1)).ToListAsync();
+            return await _context.Jobs.Where(s => s.IsDelete.Equals(1) && s.Status.Equals("Accept")).ToListAsync();
         }
 
         [HttpGet("GetJobByCategory/{id}")]
@@ -125,8 +125,11 @@ namespace JobService.Controllers
             job.IsDelete = 0;
             _context.Jobs.Update(job);
             await _context.SaveChangesAsync();
-            var wishlist = await _context.Wishlists.SingleOrDefaultAsync(j => j.JobId == id);
-            _context.Wishlists.Remove(wishlist);
+            var wishlist = _context.Wishlists.Where(j => j.JobId == id).ToList();
+            foreach (var wish in wishlist)
+            {
+                _context.Wishlists.Remove(wish);
+            }
             await _context.SaveChangesAsync();
             return NoContent();
         }
