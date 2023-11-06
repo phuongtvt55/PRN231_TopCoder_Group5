@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Http;
 @{
     Layout = "~/Views/Shared/_BlogLayout.cshtml";
-
+    var userId = Context.Session.GetInt32("UserId");
 }
 
 <section class="s-content s-content--single">
@@ -37,7 +37,7 @@
         <div id="comments" class="row">
             <div class="column">
 
-                <h3>5 Comments</h3>
+                <h3>Comments</h3>
 
                 <!-- START commentlist -->
                 <ol class="commentlist" id="commentlist">
@@ -66,7 +66,7 @@
                             <textarea name="cMessage" id="cMessage" class="h-full-width" placeholder="Your Message"></textarea>
                         </div>
 
-                        <input name="submit" id="submit" class="btn btn--primary btn-wide btn--large h-full-width" value="Add Comment" type="submit">
+                        <input name="submit" id="btn-submit" class="btn btn--primary btn-wide btn--large h-full-width" onclick="return Add()" value="Add Comment">
 
                     </fieldset>
                 </form> <!-- end form -->
@@ -80,6 +80,7 @@
 
 </section> <!-- end s-content -->
 <input type="hidden" value="@Model.BlogId" id="blogId"/>
+<input type="hidden" value="@userId" id="userId" />
 @section Scripts{
     <script type="text/javascript">
         //Load Data in Table when documents is ready
@@ -103,16 +104,13 @@
                             html += `
                                 <li class="depth-1 comment">
                                     <div class="comment__avatar">
-                                        <img class="avatar" src="${user.imageProfile}" alt="" width="50" height="50">
+                                        <img class="avatar" src="/${user.imageProfile}" alt="" width="50" height="50">
                                     </div>
                                     <div class="comment__content">
                                         <div class="comment__info">
                                             <div class="comment__author">${user.userName}</div>
                                             <div class="comment__meta">
                                                 <div class="comment__time">${item.commentDate}</div>
-                                                <div class="comment__reply">
-                                                    <a class="comment-reply-link" href="#0">Reply</a>
-                                                </div>
                                             </div>
                                         </div>
                                         <div class="comment__text">
@@ -149,6 +147,51 @@
                 }
             });
         }
+        //Add Data Function
+        function Add() {
+            
+            var obj = {
+                //ProductID: $('#ProductID').val(),
+                BlogId: $('#blogId').val(),
+                UserId: $('#userId').val(),
+                CommentMsg: $('#cMessage').val(),
+                CommentDate: "01/01/2002",
+                Rate: 5,
+            };
+            $.ajax({
+                url: "https://localhost:44305/api/Comments",
+                data: JSON.stringify(obj),
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
 
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Comment successfully'
+                    }).then(() => {
+                        $('#cMessage').val("");
+                        var blogId = $('#blogId').val();
+                        loadComment(blogId);
+                    })
+                    
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
     </script>
 }

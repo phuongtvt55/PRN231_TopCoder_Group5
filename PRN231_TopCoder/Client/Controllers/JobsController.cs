@@ -61,7 +61,8 @@ namespace Client.Controllers
                 return RedirectToAction("SetSessionData", "Users", new {id = 1});
             }
             ViewData["UserId"] = userId;
-            
+            var db = new userServiceContext();
+            ViewData["User"] = db.BusinessProfiles.Include(b => b.User).ToList();
             return View(list);
         }
 
@@ -90,6 +91,8 @@ namespace Client.Controllers
                 var userId = HttpContext.Session.GetInt32("UserId");
                 //**
                 ViewData["UserId"] = userId;
+                var db = new userServiceContext();
+                ViewData["User"] = db.BusinessProfiles.Include(b => b.User).ToList();
                 return View("Index", list);
             }
             return NotFound();
@@ -122,6 +125,8 @@ namespace Client.Controllers
                 var role = HttpContext.Session.GetString("MyRole");
                 //**
                 ViewData["UserId"] = userId;
+                var db = new userServiceContext();
+                ViewData["User"] = db.BusinessProfiles.Include(b => b.User).ToList();
                 return View("Index", list);
             }
             return NotFound();
@@ -156,6 +161,8 @@ namespace Client.Controllers
                 var role = HttpContext.Session.GetString("MyRole");
                 //**
                 ViewData["UserId"] = userId;
+                var db = new userServiceContext();
+                ViewData["User"] = db.BusinessProfiles.Include(b => b.User).ToList();
                 return View("Index", list);
             }
             return NotFound();
@@ -176,7 +183,8 @@ namespace Client.Controllers
      
                 ViewData["JobCategory"] = _context.JobCategories.Include(c => c.Category).ToList();
                 ViewData["JobRank"] = _context.JobRanks.Include(c => c.Rank).ToList();
-
+                var db = new userServiceContext();
+                ViewData["User"] = db.BusinessProfiles.Include(b => b.User).ToList();
                 return View(list);
             }
             return NotFound();

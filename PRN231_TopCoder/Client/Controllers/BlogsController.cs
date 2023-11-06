@@ -195,13 +195,27 @@ namespace Client.Controllers
 
         public async Task<IActionResult> ShowBlogList()
         {
-            HttpResponseMessage response = await client.GetAsync(api);
+            HttpResponseMessage response = await client.GetAsync(api + "/GetBlogAdmin");
             string data = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
             List<Blog> list = JsonSerializer.Deserialize<List<Blog>>(data, options);
+            return View(list);
+        }
+
+        public async Task<IActionResult> MyBlog()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            HttpResponseMessage response = await client.GetAsync(api + "/GetBlogAdmin");
+            string data = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            List<Blog> list = JsonSerializer.Deserialize<List<Blog>>(data, options);
+            list = list.Where(i => i.UserId == userId).ToList();
             return View(list);
         }
         public async Task<IActionResult> UpdateStatus(int id, string status)

@@ -84,6 +84,8 @@ namespace BlogService.Controllers
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
+            comment.Rate = 5;
+            comment.CommentDate = DateTime.Today;
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 

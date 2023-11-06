@@ -38,6 +38,8 @@
     <link rel="manifest" href="/site/site.webmanifest">
     <!-- Froala -->
     <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <!-- Sweet Alert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body id="top">
@@ -67,12 +69,12 @@
                 <h2 class="s-header__nav-heading h6">Site Navigation</h2>
 
                 <ul class="s-header__nav">
-                    <li class="current"><a href="index.html" title="">Home</a></li>
+                    <li class="current"><a asp-action="Index" title="">Home</a></li>
                     <li class="has-children">
                         <a href="#0" title="">Blog</a>
                         <ul class="sub-menu">
                             <li><a asp-action="Create">Post a blog</a></li>
-                            <li><a href="single-audio.html">View your blog</a></li>
+                            <li><a asp-action="MyBlog">View your blog</a></li>
                         </ul>
                     </li>
                     <li class="has-children">

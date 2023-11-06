@@ -85,6 +85,7 @@ namespace UserService.Controllers
             _context.Entry(user).State = EntityState.Modified;
             if (user.UserType == "Employer")
             {
+                user.BusinessProfile.IsDelete = 1;
                 _context.Entry(user.BusinessProfile).State = EntityState.Modified;
             }            
 

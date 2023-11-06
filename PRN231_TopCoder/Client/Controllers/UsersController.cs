@@ -197,7 +197,7 @@ namespace Client.Controllers
                 HttpResponseMessage response = client.PutAsync(baseAddress + "/Users/" + user.UserId, content).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Jobs");
                 }
             }
             catch (Exception ex)
