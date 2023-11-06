@@ -577,7 +577,7 @@
             } else {
                 $('#YearExperience').css('border-color', "lightgrey");
             }
-            if (salaryFrom >= salaryTo) {
+            if (parseFloat(salaryFrom) >= parseFloat(salaryTo)) {
                 errorMessage += '<b><span style="color: red;">Salary From</span> must be less than <span style="color: red;">Salary To</span></b>';
             }
 

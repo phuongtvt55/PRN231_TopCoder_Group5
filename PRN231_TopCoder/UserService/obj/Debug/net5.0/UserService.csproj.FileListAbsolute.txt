@@ -334,3 +334,4 @@ D:\FA23\PRN231\PRN231_TopCoder_Group5\PRN231_TopCoder\UserService\obj\Debug\net5
 D:\FA23\PRN231\PRN231_TopCoder_Group5\PRN231_TopCoder\UserService\obj\Debug\net5.0\ref\UserService.dll
 D:\FA23\PRN231\PRN231_TopCoder_Group5\PRN231_TopCoder\UserService\bin\Debug\net5.0\BCrypt.Net.dll
 D:\FPTUNIVERSITY\Fall23_SE1603\PRN231\Project\TopCoder\PRN231_TopCoder_Group5\PRN231_TopCoder_Group5\PRN231_TopCoder\UserService\bin\Debug\net5.0\BCrypt.Net.dll
+D:\FA23\PRN231\Check\PRN231_TopCoder_Group5\PRN231_TopCoder\UserService\bin\Debug\net5.0\BCrypt.Net.dll

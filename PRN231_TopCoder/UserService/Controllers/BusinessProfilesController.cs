@@ -76,17 +76,24 @@ namespace UserService.Controllers
 
         // POST: api/BusinessProfiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("register")]
+        [HttpPost]
         public async Task<ActionResult<User>> PostBusinessProfile(User user)
         {
 			user.BusinessProfile.UserId = user.UserId;
 			user.BusinessProfile.IsDelete = 1;
-
+			var userList = await _context.Users.Include(m => m.BusinessProfile).ToListAsync();
+			foreach (var item in userList)
+			{
+				if (user.Email == item.Email)
+				{
+					return BadRequest("There is already have an account with this email");
+				}
+			}
 			_context.BusinessProfiles.Add(user.BusinessProfile);
 			_context.Users.Add(user);
 			await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            return Ok();
         }
 
         // DELETE: api/BusinessProfiles/5

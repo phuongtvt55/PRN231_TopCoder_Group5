@@ -41,7 +41,7 @@ namespace Client.Controllers
                 HttpResponseMessage response = null;
                 if (role == "Employer")
                 {
-                    response = client.PostAsync(baseAddress + "/BusinessProfiles/register", content).Result;                    
+                    response = client.PostAsync(baseAddress + "/BusinessProfiles", content).Result;                    
                 }
                 else
                 {

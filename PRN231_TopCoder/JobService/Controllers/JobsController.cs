@@ -27,6 +27,8 @@ namespace JobService.Controllers
             return await _context.Jobs.Where(s => s.IsDelete.Equals(1) && s.Status.Equals("Accept")).ToListAsync();
         }
 
+
+
         [HttpGet("GetJobByCategory/{id}")]
         public IActionResult GetJobByCategory(int id)
         {

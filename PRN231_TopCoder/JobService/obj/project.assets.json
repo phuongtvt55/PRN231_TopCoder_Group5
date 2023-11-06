@@ -8104,19 +8104,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ADMIN\\.nuget\\packages\\": {}
+    "C:\\Users\\DELL\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\JobService\\JobService.csproj",
+      "projectUniqueName": "D:\\FA23\\PRN231\\Check\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\JobService\\JobService.csproj",
       "projectName": "JobService",
-      "projectPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\JobService\\JobService.csproj",
-      "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "D:\\FPTUNIVERSITY\\Fall23_SE1603\\PRN231\\Project\\TopCoder\\PRN231_TopCoder_Group5\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\JobService\\obj\\",
+      "projectPath": "D:\\FA23\\PRN231\\Check\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\JobService\\JobService.csproj",
+      "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
+      "outputPath": "D:\\FA23\\PRN231\\Check\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\JobService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8198,7 +8198,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }
