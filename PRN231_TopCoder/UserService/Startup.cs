@@ -37,6 +37,7 @@ namespace UserService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserService", Version = "v1" });
             });
             services.AddDbContext<userServiceContext>();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +55,13 @@ namespace UserService
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @{
     var role = Context.Session.GetString("MyRole");
-    var username = Context.Session.GetString("UserName");
+    var username = Context.Session.GetString("Username");
     var image = Context.Session.GetString("ImageProfile");
     var userId = Context.Session.GetString("UserId");
 }

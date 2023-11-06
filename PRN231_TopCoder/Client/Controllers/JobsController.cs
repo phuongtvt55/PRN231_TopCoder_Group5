@@ -373,7 +373,7 @@ namespace Client.Controllers
             job.BusinessId = businessId;
             job.PostDate = jobEdit.PostDate;
             job.Salary = salaryFrom + "-" + salaryTo;
-            job.IsDelete = 1;
+            job.IsDelete = jobEdit.IsDelete;
             job.Status = jobEdit.Status;
             string data = JsonSerializer.Serialize(job);
             var content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
