@@ -504,6 +504,7 @@ namespace Client.Controllers
         public async Task<IActionResult> ApplyJob(JobApplication jobApp)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
+            var businessId = HttpContext.Session.GetInt32("BusinessId");
 
             var options = new JsonSerializerOptions
             {
@@ -525,35 +526,42 @@ namespace Client.Controllers
                 HttpResponseMessage response1 = await client.PostAsync("https://localhost:44369/api/JobApplication/PostJobApplication", content);
                 if (response1.IsSuccessStatusCode)
                 {
-                    //Send application to email 
-                    //Email & Content
-                    MailMessage mail = new MailMessage();
-                    mail.To.Add("nqhuy375@gmail.com");
-                    //mail.To.Add("huonglh3@fpt.edu.vn");
-                    mail.From = new MailAddress(user.Email);
-                    mail.Subject = "Application Submission";
-                    mail.Body = Request.Form["textLetter"];
-                    mail.IsBodyHtml = true;
+                    HttpResponseMessage response2 = await client.GetAsync("https://localhost:44359/api/BusinessProfiles/" + businessId);
+                    if (response2.IsSuccessStatusCode)
+                    {
+                        string data2 = response.Content.ReadAsStringAsync().Result;
+                        User businessUser = JsonSerializer.Deserialize<User>(data2, options);
+                        //Send application to email 
+                        //Email & Content
+                        MailMessage mail = new MailMessage();
+                        //mail.To.Add("nqhuy375@gmail.com");
+                        mail.To.Add(businessUser.Email);
+                        //mail.To.Add("huonglh3@fpt.edu.vn");
+                        mail.From = new MailAddress(user.Email);
+                        mail.Subject = "Application Submission";
+                        mail.Body = Request.Form["textLetter"];
+                        mail.IsBodyHtml = true;
 
-                    //Attach file
-                    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/", user.Cvprofile);
-                    Attachment attachment = new Attachment(path);
-                    mail.Attachments.Add(attachment);
+                        //Attach file
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/", user.Cvprofile);
+                        Attachment attachment = new Attachment(path);
+                        mail.Attachments.Add(attachment);
 
-                    //Server Details
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.Port = 587;
-                    smtp.EnableSsl = true;
-                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        //Server Details
+                        SmtpClient smtp = new SmtpClient();
+                        smtp.Host = "smtp.gmail.com";
+                        smtp.Port = 587;
+                        smtp.EnableSsl = true;
+                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-                    //Credentials
-                    System.Net.NetworkCredential credentials = new System.Net.NetworkCredential();
-                    credentials.UserName = user.Email;
-                    credentials.Password = "lixi cghr hixf pxjs";
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = credentials;
-                    smtp.Send(mail);
+                        //Credentials
+                        System.Net.NetworkCredential credentials = new System.Net.NetworkCredential();
+                        credentials.UserName = user.Email;
+                        credentials.Password = "mxiw qmre aqln irvc";
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = credentials;
+                        smtp.Send(mail);
+                    }                    
                     return View("Index");
                 }                               
             }

@@ -41,11 +41,11 @@ namespace Client.Controllers
                 HttpResponseMessage response = null;
                 if (role == "Employer")
                 {
-                    response = client.PostAsync(baseAddress + "/BusinessProfiles", content).Result;                    
+                    response = client.PostAsync(baseAddress + "/BusinessProfiles/register", content).Result;                    
                 }
                 else
                 {
-                    response = client.PostAsync(baseAddress + "/Users", content).Result;
+                    response = client.PostAsync(baseAddress + "/Users/register", content).Result;
                 }
                 if (response.IsSuccessStatusCode)
                 {

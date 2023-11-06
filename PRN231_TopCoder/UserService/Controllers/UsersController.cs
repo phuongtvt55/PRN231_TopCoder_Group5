@@ -43,6 +43,7 @@ namespace UserService.Controllers
             return user;
         }
 
+
         // GET: api/Users/
         [HttpPost("{id}")]
         public async Task<IActionResult> Login([FromBody] UserLoginModel loginModel)
@@ -108,7 +109,7 @@ namespace UserService.Controllers
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             var userList = await _context.Users.Include(m => m.BusinessProfile).ToListAsync();
