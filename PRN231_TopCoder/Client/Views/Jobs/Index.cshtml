@@ -616,26 +616,42 @@
             var heart = ".heart-" + JobId;
             $(heart).toggleClass("toggleWishlist");
             if ($(heart).hasClass("toggleWishlist")) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Add wishlist successfully'
+                })
                 addWishList(JobId, UserId);
             } else {
-                getWishListId(JobId, UserId);
-            }
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
 
-            Toast.fire({
-                icon: 'success',
-                title: 'Add wishlist successfully'
-            })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Remove wishlist successfully'
+                })
+                getWishListId(JobId, UserId);
+            }            
         } else {
             Swal.fire({
                 icon: 'error',
