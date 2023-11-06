@@ -29,9 +29,11 @@ namespace UserService.Controllers
 
         // GET: api/BusinessProfiles/5
         [HttpGet("{id}")]
-		public async Task<ActionResult<User>> GetUser(int id)
+		public async Task<ActionResult<User>> GetUserByBussinessId(int id)
 		{
-			var user = await _context.Users.Include(m => m.BusinessProfile).FirstOrDefaultAsync(m => m.UserId == id);
+			var user = await _context.Users.Include(m => m.BusinessProfile)
+                .Where(m => m.BusinessProfile.BusinessId == id)
+                .FirstOrDefaultAsync(m => m.BusinessProfile.BusinessId == id);
 
 			if (user == null)
 			{
@@ -74,7 +76,7 @@ namespace UserService.Controllers
 
         // POST: api/BusinessProfiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<User>> PostBusinessProfile(User user)
         {
 			user.BusinessProfile.UserId = user.UserId;

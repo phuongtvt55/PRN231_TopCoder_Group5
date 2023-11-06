@@ -43,26 +43,50 @@ namespace UserService.Controllers
             return user;
         }
 
+
+        // GET: api/Users/
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Login([FromBody] UserLoginModel loginModel)
+        {
+            if (loginModel == null)
+            {
+                return BadRequest("Invalid login data.");
+            }
+
+            // Find the user by email
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == loginModel.Email);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var loginPass = BCrypt.Net.BCrypt.HashPassword(loginModel.Password);
+            // Verify the password (you should use a secure password hashing mechanism)
+            if (BCrypt.Net.BCrypt.Verify(loginPass, user.Password))
+            {
+                return Unauthorized("Invalid password.");
+            }
+
+            return Ok(user);
+        }
+
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
-            var userList = await _context.Users.Include(m => m.BusinessProfile).ToListAsync();
             if (id != user.UserId)
             {
                 return BadRequest();
             }
-            foreach(var item in userList)
-            {
-                if (user.Email == item.Email)
-                {
-                    return BadRequest();
-                }
-            }            
 
             _context.Entry(user).State = EntityState.Modified;
-            _context.Entry(user.BusinessProfile).State = EntityState.Modified;
+            if (user.UserType == "Employer")
+            {
+                _context.Entry(user.BusinessProfile).State = EntityState.Modified;
+            }            
 
             try
             {
@@ -85,9 +109,17 @@ namespace UserService.Controllers
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            var userList = await _context.Users.Include(m => m.BusinessProfile).ToListAsync();
+            foreach (var item in userList)
+            {
+                if (user.Email == item.Email)
+                {
+                    return BadRequest("There is already have an account with this email");
+                }
+            }            
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
