@@ -7,9 +7,7 @@
 
 <h1>Application List</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table table-striped table-condensed" id="userTable">
     <thead>
         <tr>
@@ -20,7 +18,7 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsDelete)
+                UserName
             </th>
             <th>Action</th>
         </tr>
@@ -35,9 +33,16 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsDelete)
-                </td>
+                @foreach (var userName in ViewBag.User)
+                {
+                    if (item.UserId == userName.UserId)
+                    {
+                        <td>
+                            @userName.Email
+                        </td>
+                    }
+                }
+                
                 <td>
                     @if (item.Status == "Waiting")
                     {

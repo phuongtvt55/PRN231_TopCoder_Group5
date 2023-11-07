@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
+using JobService.Models;
+using UserService.Models;
 
 namespace Client.Controllers
 {
@@ -14,12 +18,16 @@ namespace Client.Controllers
     {
         Uri baseAddress = new Uri("https://localhost:44369/api/JobApplication");
         private readonly HttpClient _client;
+        private readonly jobApplicationServiceContext _context;
+        private readonly jobServiceContext _jobcontext;
 
         // constructor
         public JobApplicationController()
         {
             _client = new HttpClient();
             _client.BaseAddress = baseAddress;
+            _context = new jobApplicationServiceContext();
+            _jobcontext = new jobServiceContext();
         }
 
         //------------------Index------------------------
@@ -217,10 +225,23 @@ namespace Client.Controllers
 
         public async Task<IActionResult> ShowApplicationList()
         {
-            HttpResponseMessage response = await _client.GetAsync(baseAddress);
-            string data = await response.Content.ReadAsStringAsync();
-            List<JobApplication> list = JsonConvert.DeserializeObject<List<JobApplication>>(data);
-            return View(list);
+            var businessId = HttpContext.Session.GetInt32("BusinessId");
+            var jobList = _jobcontext.Jobs.Where(m => m.BusinessId == businessId).ToList();
+            List<JobApplication> jobApplications = new List<JobApplication>();  
+            var applicationList = _context.JobApplications.ToList();
+            foreach(var job in jobList)
+            {
+                foreach(var application in applicationList)
+                {
+                    if (job.JobId == application.JobId)
+                    {
+                        jobApplications.Add(application);
+                    }                    
+                }
+            }
+            var db = new userServiceContext();
+            ViewData["User"] = db.Users.ToList();
+            return View(applicationList);
         }
         public async Task<IActionResult> UpdateStatus(int id, string status)
         {

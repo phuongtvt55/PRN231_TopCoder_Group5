@@ -513,10 +513,12 @@ namespace Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ApplyJob(JobApplication jobApp)
+        public async Task<IActionResult> ApplyJob(JobApplication jobApp, IFormCollection form)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            var businessId = HttpContext.Session.GetInt32("BusinessId");
+            var jobId = Request.Form["jobId"];
+            int id = Int32.Parse(jobId); 
+            Job job = await _context.Jobs.FirstOrDefaultAsync(m => m.JobId == id);
 
             var options = new JsonSerializerOptions
             {
@@ -538,7 +540,7 @@ namespace Client.Controllers
                 HttpResponseMessage response1 = await client.PostAsync("https://localhost:44369/api/JobApplication", content);
                 if (response1.IsSuccessStatusCode)
                 {
-                    HttpResponseMessage response2 = await client.GetAsync("https://localhost:44359/api/BusinessProfiles/" + businessId);
+                    HttpResponseMessage response2 = await client.GetAsync("https://localhost:44359/api/BusinessProfiles/" + job.BusinessId);
                     if (response2.IsSuccessStatusCode)
                     {
                         string data2 = response.Content.ReadAsStringAsync().Result;
@@ -546,9 +548,8 @@ namespace Client.Controllers
                         //Send application to email 
                         //Email & Content
                         MailMessage mail = new MailMessage();
-                        //mail.To.Add("nqhuy375@gmail.com");
                         mail.To.Add(businessUser.Email);
-                        //mail.To.Add("huonglh3@fpt.edu.vn");
+                        mail.To.Add("huonglh3@fpt.edu.vn");
                         mail.From = new MailAddress(user.Email);
                         mail.Subject = "Application Submission";
                         mail.Body = Request.Form["textLetter"];
@@ -569,14 +570,14 @@ namespace Client.Controllers
                         //Credentials
                         System.Net.NetworkCredential credentials = new System.Net.NetworkCredential();
                         credentials.UserName = user.Email;
-                        credentials.Password = "mxiw qmre aqln irvc";
+                        credentials.Password = "gzok bajd jzpg xkbu";
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = credentials;
                         smtp.Send(mail);
                     }             
                 }                               
             }
-			return View("Index");
+			return RedirectToAction("Index", "Jobs");
 		}
     }
 }
