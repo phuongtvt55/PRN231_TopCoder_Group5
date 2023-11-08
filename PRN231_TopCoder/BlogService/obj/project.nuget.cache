@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Wl0hPrDod7cNzgeS5rKnIm26Bntm8cN3h4+6zkfNj5n1yBtly7BcYKtc6EQjT2nkFSsPhmT8qDsVxzW163aUCg==",
+  "dgSpecHash": "T0UMnTCcBMVvfbufP3fc3jVZb63R+B3PZXTxP1F9o0kxvr0cpySzcu77RpXvpWz3Zm+U/5jcSdLwiVZuseL5Fg==",
   "success": true,
-  "projectFilePath": "D:\\FA23\\PRN231\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+  "projectFilePath": "D:\\FA23\\PRN231\\Check\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\5.0.17\\microsoft.aspnetcore.jsonpatch.5.0.17.nupkg.sha512",

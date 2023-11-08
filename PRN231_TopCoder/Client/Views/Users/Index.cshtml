@@ -28,7 +28,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.IsDelete)
             </th>
-            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -49,11 +48,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsDelete)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.UserId" class="fa-solid fa-pen-to-square"></a>
-                    <a asp-action="Details" asp-route-id="@item.UserId" class="fa-solid fa-circle-info"></a>
-                    <a asp-action="Delete" asp-route-id="@item.UserId" class="fa-solid fa-trash"></a>
                 </td>
             </tr>
         }

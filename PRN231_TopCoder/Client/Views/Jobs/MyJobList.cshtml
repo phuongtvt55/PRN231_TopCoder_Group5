@@ -230,10 +230,11 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                            <div class="d-flex mb-3">
+                                            <div class="d-flex mb-3">                                                
                                                 <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Detail</a>
-                                                <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.JobId" style="margin-left: 20px;">Edit Job</a>
-                                                <a class="btn btn-danger" onclick="removeJob(@item.JobId)" style="margin-left: 20px;">Delete Job</a>
+                                                <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.JobId" style="margin-left: 20px;">Edit</a>
+                                                <a class="btn btn-danger" onclick="removeJob(@item.JobId)" style="margin-left: 20px;">Delete</a>
+                                                <a class="btn btn-primary" asp-action="ShowApplicationList" asp-controller="JobApplication" asp-route-id="@item.JobId" style="margin-left: 20px;">Applications</a>
                                             </div>
                                             <span class="text-truncate">Status: @item.Status</span>
                                             <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostDate</small>
@@ -300,8 +301,9 @@
                                             <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                                 <div class="d-flex mb-3">
                                                     <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Detail</a>
-                                                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.JobId" style="margin-left: 20px;">Edit Job</a>
-                                                    <a class="btn btn-danger" onclick="removeJob(@item.JobId)" style="margin-left: 20px;">Delete Job</a>
+                                                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.JobId" style="margin-left: 20px;">Edit</a>
+                                                    <a class="btn btn-danger" onclick="removeJob(@item.JobId)" style="margin-left: 20px;">Delete</a>
+                                                    <a class="btn btn-primary" asp-action="ShowApplicationList" asp-controller="JobApplication" asp-route-id="@item.JobId" style="margin-left: 20px;">Applications</a>
                                                 </div>
                                                 <span class="text-truncate">Status: @item.Status</span>
                                                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostDate</small>
@@ -369,9 +371,9 @@
                                             <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                                 <div class="d-flex mb-3">
                                                     <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.JobId">Detail</a>
-                                                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.JobId" style="margin-left: 20px;">Edit Job</a>
-                                                    <a class="btn btn-danger" onclick="removeJob(@item.JobId)" style="margin-left: 20px;">Delete Job</a>
-                                                    
+                                                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.JobId" style="margin-left: 20px;">Edit</a>
+                                                    <a class="btn btn-danger" onclick="removeJob(@item.JobId)" style="margin-left: 20px;">Delete</a>
+                                                    <a class="btn btn-primary" asp-action="ShowApplicationList" asp-controller="JobApplication" asp-route-id="@item.JobId" style="margin-left: 20px;">Applications</a>
                                                 </div>
                                                 <span class="text-truncate">Status: @item.Status</span>
                                                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostDate</small>

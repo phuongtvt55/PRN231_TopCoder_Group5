@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using JobService.Models;
 using UserService.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client.Controllers
 {
@@ -19,7 +20,6 @@ namespace Client.Controllers
         Uri baseAddress = new Uri("https://localhost:44369/api/JobApplication");
         private readonly HttpClient _client;
         private readonly jobApplicationServiceContext _context;
-        private readonly jobServiceContext _jobcontext;
 
         // constructor
         public JobApplicationController()
@@ -27,7 +27,6 @@ namespace Client.Controllers
             _client = new HttpClient();
             _client.BaseAddress = baseAddress;
             _context = new jobApplicationServiceContext();
-            _jobcontext = new jobServiceContext();
         }
 
         //------------------Index------------------------
@@ -223,20 +222,15 @@ namespace Client.Controllers
 
         }
 
-        public async Task<IActionResult> ShowApplicationList()
+        public async Task<IActionResult> ShowApplicationList(int id)
         {
-            var businessId = HttpContext.Session.GetInt32("BusinessId");
-            var jobList = _jobcontext.Jobs.Where(m => m.BusinessId == businessId).ToList();
             List<JobApplication> jobApplications = new List<JobApplication>();  
-            var applicationList = _context.JobApplications.ToList();
-            foreach(var job in jobList)
+            var applicationList = await _context.JobApplications.ToListAsync();
+            foreach (var application in applicationList)
             {
-                foreach(var application in applicationList)
+                if (application.JobId == id)
                 {
-                    if (job.JobId == application.JobId)
-                    {
-                        jobApplications.Add(application);
-                    }                    
+                    jobApplications.Add(application);
                 }
             }
             var db = new userServiceContext();
@@ -257,7 +251,7 @@ namespace Client.Controllers
                 HttpResponseMessage response2 = await _client.PutAsync(baseAddress + "/" + id, content);
                 if (response2.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("ShowJobList");
+                    return RedirectToAction("MyJobList", "Jobs");
                 }
             }
             return Ok();

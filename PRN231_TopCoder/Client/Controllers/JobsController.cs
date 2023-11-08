@@ -549,7 +549,7 @@ namespace Client.Controllers
                         //Email & Content
                         MailMessage mail = new MailMessage();
                         mail.To.Add(businessUser.Email);
-                        mail.To.Add("huonglh3@fpt.edu.vn");
+                        //mail.To.Add("huonglh3@fpt.edu.vn");
                         mail.From = new MailAddress(user.Email);
                         mail.Subject = "Application Submission";
                         mail.Body = Request.Form["textLetter"];

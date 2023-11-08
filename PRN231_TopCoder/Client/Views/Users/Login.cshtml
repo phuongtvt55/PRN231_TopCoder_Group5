@@ -3,6 +3,7 @@
 @{
 	ViewData["Title"] = "Login";
 	Layout = "~/Views/Shared/_Layout.cshtml";
+	var role = Context.Session.GetString("MyRole");
 }
 <head>
 	<link rel="stylesheet" href="~/css/form-style.css">
@@ -20,6 +21,7 @@
 				<div class="form-header">
 					<h3 class="form-title">Login to continue</h3>
 					<img src="img/sign-up.png" alt="" class="sign-up-icon">
+					<h4>Only for @role</h4>
 				</div>
 				<div class="form-group">
 					<label for="">E-mail:</label>

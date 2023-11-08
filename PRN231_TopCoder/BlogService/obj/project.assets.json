@@ -5954,11 +5954,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\FA23\\PRN231\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+      "projectUniqueName": "D:\\FA23\\PRN231\\Check\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
       "projectName": "BlogService",
-      "projectPath": "D:\\FA23\\PRN231\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
+      "projectPath": "D:\\FA23\\PRN231\\Check\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\BlogService.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "D:\\FA23\\PRN231\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\obj\\",
+      "outputPath": "D:\\FA23\\PRN231\\Check\\PRN231_TopCoder_Group5\\PRN231_TopCoder\\BlogService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
