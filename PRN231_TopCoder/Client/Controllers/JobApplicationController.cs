@@ -12,6 +12,8 @@ using System.Linq;
 using JobService.Models;
 using UserService.Models;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Net.Mail;
 
 namespace Client.Controllers
 {
@@ -20,6 +22,7 @@ namespace Client.Controllers
         Uri baseAddress = new Uri("https://localhost:44369/api/JobApplication");
         private readonly HttpClient _client;
         private readonly jobApplicationServiceContext _context;
+        private readonly userServiceContext _userContext;
 
         // constructor
         public JobApplicationController()
@@ -27,6 +30,7 @@ namespace Client.Controllers
             _client = new HttpClient();
             _client.BaseAddress = baseAddress;
             _context = new jobApplicationServiceContext();
+            _userContext = new userServiceContext();
         }
 
         //------------------Index------------------------
@@ -239,7 +243,7 @@ namespace Client.Controllers
         }
         public async Task<IActionResult> UpdateStatus(int id, string status)
         {
-            JobApplication jobApp = new JobApplication();
+            JobApplication jobApp = new JobApplication();            
             HttpResponseMessage response1 = await _client.GetAsync(baseAddress + "/" + id);
             if (response1.IsSuccessStatusCode)
             {
@@ -251,7 +255,40 @@ namespace Client.Controllers
                 HttpResponseMessage response2 = await _client.PutAsync(baseAddress + "/" + id, content);
                 if (response2.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("MyJobList", "Jobs");
+                    var userId = HttpContext.Session.GetInt32("UserId");
+                    User businessUser = await _userContext.Users.FirstOrDefaultAsync(m => m.UserId == userId);
+                    User user = await _userContext.Users.FirstOrDefaultAsync(m => m.UserId == jobApp.UserId);
+
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add(user.Email);
+                    //mail.To.Add("huonglh3@fpt.edu.vn");
+                    mail.From = new MailAddress(businessUser.Email);
+                    mail.Subject = "Application Submission Result";
+                    if (status == "Accept")
+                    {
+                        mail.Body = "Congratulation, your application had been accepted";
+                    }
+                    else
+                    {
+                        mail.Body = "Unfortunately, your application had been denied";
+                    }
+                    mail.IsBodyHtml = true;
+
+                    //Server Details
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.EnableSsl = true;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                    //Credentials
+                    System.Net.NetworkCredential credentials = new System.Net.NetworkCredential();
+                    credentials.UserName = user.Email;
+                    credentials.Password = "gzok bajd jzpg xkbu";
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = credentials;
+                    smtp.Send(mail);
+                    return RedirectToAction("ShowApplicationList", new {jobId = id});
                 }
             }
             return Ok();
